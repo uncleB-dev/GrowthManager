@@ -33,6 +33,8 @@ export function Dashboard() {
     const [editingLog, setEditingLog] = useState<DailyLog | null>(null);
     const [showLeaderSettings, setShowLeaderSettings] = useState(false);
     const [showGoalSettings, setShowGoalSettings] = useState(false);
+    const [showNicknameModal, setShowNicknameModal] = useState(false);
+    const [nickname, setNickname] = useState("");
     const [viewMode, setViewMode] = useState<'agent' | 'leader'>('agent');
 
     // Today's specific data - Initial value: "퇴근"
@@ -182,6 +184,13 @@ export function Dashboard() {
                                     <p className="text-sm font-bold text-[var(--off-black)] truncate">{user?.email}</p>
                                 </div>
                                 <div className="p-2">
+                                    <button
+                                        onClick={() => { setNickname(profile?.nickname || ""); setShowNicknameModal(true); setShowProfileMenu(false); }}
+                                        className="w-full flex items-center gap-3 px-4 py-3 text-sm font-bold text-[var(--off-black)] hover:bg-[var(--canvas)] rounded-[12px] transition-all group"
+                                    >
+                                        <Edit2 className="w-4 h-4 text-[var(--muted-sand)] group-hover:text-[var(--fin-orange)]" />
+                                        나의 닉네임 설정
+                                    </button>
                                     <button
                                         onClick={() => { setShowLeaderSettings(true); setShowProfileMenu(false); }}
                                         className="w-full flex items-center gap-3 px-4 py-3 text-sm font-bold text-[var(--off-black)] hover:bg-[var(--canvas)] rounded-[12px] transition-all group"
@@ -401,6 +410,47 @@ export function Dashboard() {
             )}
             {showGoalSettings && (
                 <MonthlyGoalSettings onClose={() => setShowGoalSettings(false)} />
+            )}
+
+            {/* Nickname Settings Modal */}
+            {showNicknameModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#111111]/30 backdrop-blur-md animate-in fade-in duration-300">
+                    <div className="premium-card w-full max-w-sm p-8 space-y-6 animate-in zoom-in-95 duration-300 shadow-2xl">
+                        <div className="flex justify-between items-center border-b border-[var(--oat-border)] pb-4">
+                            <h2 className="text-xl font-bold font-outfit text-[var(--off-black)]">닉네임 설정</h2>
+                            <button onClick={() => setShowNicknameModal(false)} className="p-2 hover:bg-[var(--canvas)] rounded-full text-[var(--muted-sand)] transition-all">
+                                <X className="w-5 h-5" />
+                            </button>
+                        </div>
+                        <div className="space-y-4">
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-bold text-[var(--muted-sand)] uppercase tracking-[0.2em] px-1">활동 닉네임 (팀장에게 노출)</label>
+                                <input
+                                    type="text"
+                                    value={nickname}
+                                    onChange={(e) => setNickname(e.target.value)}
+                                    placeholder="팀원"
+                                    className="premium-input w-full h-12"
+                                    maxLength={10}
+                                />
+                                <p className="text-[10px] text-[var(--muted-sand)] px-1">팀 모니터링 화면에서 이메일 앞에 표시됩니다.</p>
+                            </div>
+                            <button
+                                onClick={async () => {
+                                    if (!user) return;
+                                    const { db } = await import("@/lib/firebase");
+                                    const { doc, setDoc } = await import("firebase/firestore");
+                                    await setDoc(doc(db, "members", user.uid), { nickname }, { merge: true });
+                                    setShowNicknameModal(false);
+                                    window.location.reload();
+                                }}
+                                className="w-full btn-premium py-3 text-sm font-bold"
+                            >
+                                저장하기
+                            </button>
+                        </div>
+                    </div>
+                </div>
             )}
         </div>
     );

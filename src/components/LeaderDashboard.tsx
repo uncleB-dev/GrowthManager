@@ -154,7 +154,10 @@ export function LeaderDashboard() {
                                 <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-10 flex-1">
                                     <div className="space-y-1 min-w-[200px]">
                                         <p className="text-xl font-bold text-[var(--off-black)]">{displayName}</p>
-                                        <p className="text-sm text-[var(--muted-sand)] font-medium">{member.memberEmail}</p>
+                                        <p className="text-sm text-[var(--muted-sand)] font-medium">
+                                            <span className="text-[var(--fin-orange)] font-bold mr-1">[{profile?.nickname || "팀원"}]</span>
+                                            {member.memberEmail}
+                                        </p>
                                     </div>
                                     <div className="flex flex-wrap gap-2">
                                         <span className={`px-4 py-1.5 text-[11px] font-bold rounded-full border uppercase tracking-[0.1em] ${currentStatus === '출근' ? 'bg-green-50 text-green-600 border-green-100' : 'bg-gray-50 text-gray-500 border-gray-100'
