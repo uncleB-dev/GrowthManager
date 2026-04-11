@@ -1,14 +1,20 @@
-"use client";
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTeam } from "@/hooks/useTeam";
 import { useAuth } from "@/context/AuthContext";
-import { X, Search, Trash2, Clock } from "lucide-react";
+import { X, Search, Trash2, Clock, CheckCircle2 } from "lucide-react";
+import { Connection } from "@/lib/types";
 
 export function LeaderSettings({ onClose }: { onClose: () => void }) {
-    const { profile } = useAuth();
-    const { requestLeader, removeLeader, loading } = useTeam();
+    const { requestLeader, removeLeader, fetchMyConnections, loading } = useTeam();
     const [email, setEmail] = useState("");
+    const [myConnections, setMyConnections] = useState<Connection[]>([]);
+
+    useEffect(() => {
+        const unsubscribe = fetchMyConnections((list) => {
+            setMyConnections(list);
+        });
+        return () => unsubscribe();
+    }, [fetchMyConnections]);
 
     const handleAdd = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -53,21 +59,31 @@ export function LeaderSettings({ onClose }: { onClose: () => void }) {
                 <div className="space-y-4">
                     <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wider">내가 등록한 팀장 목록</h3>
                     <div className="space-y-2">
-                        {profile?.leaders && profile.leaders.length > 0 ? profile.leaders.map((leaderEmail: string) => (
-                            <div key={leaderEmail} className="flex items-center justify-between p-3 bg-slate-900/60 rounded-xl border border-slate-800">
+                        {myConnections.length > 0 ? myConnections.map((conn) => (
+                            <div key={conn.id} className="flex items-center justify-between p-3 bg-slate-900/60 rounded-xl border border-slate-800">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-xs font-bold">
-                                        {leaderEmail[0].toUpperCase()}
+                                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${conn.status === 'accepted' ? 'bg-green-500/20 text-green-400' : 'bg-slate-800 text-slate-400'}`}>
+                                        {conn.leaderEmail[0].toUpperCase()}
                                     </div>
                                     <div className="flex flex-col">
-                                        <span className="text-sm font-medium text-slate-200">{leaderEmail}</span>
-                                        <span className="text-[10px] text-orange-400 flex items-center gap-1">
-                                            <Clock className="w-3 h-3" /> 승인 대기 중
-                                        </span>
+                                        <span className="text-sm font-medium text-slate-200">{conn.leaderEmail}</span>
+                                        {conn.status === 'accepted' ? (
+                                            <span className="text-[10px] text-green-400 flex items-center gap-1">
+                                                <CheckCircle2 className="w-3 h-3" /> 승인 완료
+                                            </span>
+                                        ) : conn.status === 'rejected' ? (
+                                            <span className="text-[10px] text-red-400 flex items-center gap-1">
+                                                <X className="w-3 h-3" /> 거절됨
+                                            </span>
+                                        ) : (
+                                            <span className="text-[10px] text-orange-400 flex items-center gap-1">
+                                                <Clock className="w-3 h-3" /> 승인 대기 중
+                                            </span>
+                                        )}
                                     </div>
                                 </div>
                                 <button
-                                    onClick={() => removeLeader(leaderEmail)}
+                                    onClick={() => removeLeader(conn.leaderEmail)}
                                     className="p-2 text-slate-500 hover:text-red-400 transition-colors"
                                 >
                                     <Trash2 className="w-4 h-4" />

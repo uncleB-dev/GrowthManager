@@ -11,9 +11,11 @@ import {
     updateDoc,
     arrayUnion,
     arrayRemove,
-    addDoc
+    addDoc,
+    onSnapshot
 } from "firebase/firestore";
 import { useAuth } from "@/context/AuthContext";
+import { Connection } from "@/lib/types";
 
 export function useTeam() {
     const { user, profile } = useAuth();
@@ -69,5 +71,20 @@ export function useTeam() {
         });
     };
 
-    return { requestLeader, removeLeader, loading };
+    const fetchMyConnections = (callback: (conns: Connection[]) => void) => {
+        if (!user) return () => { };
+
+        const q = query(
+            collection(db, "connections"),
+            where("memberUid", "==", user.uid),
+            where("status", "!=", "removed")
+        );
+
+        return onSnapshot(q, (snapshot) => {
+            const list = snapshot.docs.map(d => ({ id: d.id, ...d.data() } as Connection));
+            callback(list);
+        });
+    };
+
+    return { requestLeader, removeLeader, fetchMyConnections, loading };
 }
