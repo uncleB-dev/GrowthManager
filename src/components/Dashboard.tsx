@@ -27,8 +27,8 @@ const MOTIVATIONAL_QUOTES = [
 const WORK_STATUS_OPTIONS = ["출근", "퇴근", "교육", "재택", "외근", "병원", "휴무"];
 
 export function Dashboard() {
-    const { profile } = useAuth();
-    const { getTodayLog, saveLog, getMonthlyStats, getMonthlyLogs } = useLogs();
+    const { profile, user } = useAuth();
+    const { getTodayLog, saveLog, getMonthlyStats, getMonthlyLogs, loading: logsLoading } = useLogs();
     const [showLogForm, setShowLogForm] = useState(false);
     const [editingLog, setEditingLog] = useState<DailyLog | null>(null);
     const [showLeaderSettings, setShowLeaderSettings] = useState(false);
@@ -50,6 +50,7 @@ export function Dashboard() {
     }, []);
 
     const fetchAllData = () => {
+        if (!user) return;
         getTodayLog().then((log) => {
             if (log) {
                 setTodayStatus(log.work_status || "출근");
@@ -65,8 +66,10 @@ export function Dashboard() {
     };
 
     useEffect(() => {
-        fetchAllData();
-    }, [user, showLogForm]); // eslint-disable-line
+        if (user) {
+            fetchAllData();
+        }
+    }, [user, showLogForm, editingLog]); // eslint-disable-line
 
     const handleQuickSave = async () => {
         setSaveLoading(true);
@@ -89,6 +92,7 @@ export function Dashboard() {
         signOut(auth);
     };
 
+    // Calculate progress based on the requested format
     const stats = {
         monthlyGoalAmount: profile?.monthly_goal_amount || 0,
         monthlyGoalCases: profile?.monthly_goal_cases || 0,
@@ -96,8 +100,8 @@ export function Dashboard() {
     };
 
     return (
-        <div className="p-4 md:p-8 max-w-5xl mx-auto space-y-12 pb-40 min-h-screen bg-canvas">
-            {/* Header omitted for brevity, same as previous but integrated */}
+        <div className="p-4 md:p-8 max-w-5xl mx-auto space-y-12 pb-40 min-h-screen bg-canvas font-inter">
+            {/* Optimized Navigation Header */}
             <div className="flex justify-between items-center py-4 border-b border-[var(--oat-border)]/50 mb-10">
                 <div className="space-y-1">
                     <h1 className="text-2xl font-bold font-outfit text-[var(--off-black)] tracking-tight">
@@ -106,41 +110,63 @@ export function Dashboard() {
                 </div>
 
                 <div className="flex items-center gap-6">
+                    {/* View Switch Toggle */}
                     <div className="hidden sm:flex bg-[var(--canvas)] p-1 rounded-[14px] border border-[var(--oat-border)]">
                         <button
                             onClick={() => setViewMode('agent')}
-                            className={`px-6 py-2 rounded-[10px] text-sm font-bold font-outfit transition-all flex items-center gap-2 ${viewMode === 'agent' ? "bg-[var(--off-black)] text-white shadow-lg" : "text-[var(--muted-sand)]"}`}
+                            className={`px-6 py-2 rounded-[10px] text-sm font-bold font-outfit transition-all flex items-center gap-2 ${viewMode === 'agent'
+                                    ? "bg-[var(--off-black)] text-white shadow-lg"
+                                    : "text-[var(--muted-sand)] hover:text-[var(--off-black)]"
+                                }`}
                         >
                             <LayoutDashboard className="w-4 h-4" />
                             Dashboard
                         </button>
                         <button
                             onClick={() => setViewMode('leader')}
-                            className={`px-6 py-2 rounded-[10px] text-sm font-bold font-outfit transition-all flex items-center gap-2 ${viewMode === 'leader' ? "bg-[var(--off-black)] text-white shadow-lg" : "text-[var(--muted-sand)]"}`}
+                            className={`px-6 py-2 rounded-[10px] text-sm font-bold font-outfit transition-all flex items-center gap-2 ${viewMode === 'leader'
+                                    ? "bg-[var(--off-black)] text-white shadow-lg"
+                                    : "text-[var(--muted-sand)] hover:text-[var(--off-black)]"
+                                }`}
                         >
                             <Users className="w-4 h-4" />
                             Team
                         </button>
                     </div>
 
+                    {/* Profile Menu Dropdown */}
                     <div className="relative" ref={menuRef}>
-                        <button onClick={() => setShowProfileMenu(!showProfileMenu)} className="flex items-center gap-3 p-1 pr-3 hover:bg-[var(--canvas)] rounded-full transition-all border border-transparent hover:border-[var(--oat-border)]">
-                            <div className="w-10 h-10 rounded-full bg-[var(--off-black)] flex items-center justify-center text-white shadow-lg"><User className="w-5 h-5" /></div>
-                            <ChevronDown className={`w-4 h-4 text-[var(--muted-sand)] transition-all ${showProfileMenu ? 'rotate-180' : ''}`} />
+                        <button
+                            onClick={() => setShowProfileMenu(!showProfileMenu)}
+                            className="flex items-center gap-3 p-1 pr-3 hover:bg-[var(--canvas)] rounded-full transition-all border border-transparent hover:border-[var(--oat-border)]"
+                        >
+                            <div className="w-10 h-10 rounded-full bg-[var(--off-black)] flex items-center justify-center text-white shadow-lg">
+                                <User className="w-5 h-5" />
+                            </div>
+                            <ChevronDown className={`w-4 h-4 text-[var(--muted-sand)] transition-transform duration-300 ${showProfileMenu ? 'rotate-180' : ''}`} />
                         </button>
+
                         {showProfileMenu && (
-                            <div className="absolute right-0 mt-3 w-72 bg-white rounded-[20px] shadow-[0_20px_60px_rgba(17,17,17,0.12)] border border-[var(--oat-border)] z-50 overflow-hidden">
+                            <div className="absolute right-0 mt-3 w-72 bg-white rounded-[20px] shadow-[0_20px_60px_rgba(17,17,17,0.12)] border border-[var(--oat-border)] z-50 overflow-hidden animate-in zoom-in-95 duration-200">
                                 <div className="p-6 bg-[var(--canvas)]/50 border-b border-[var(--oat-border)]/50">
                                     <p className="text-[10px] font-bold text-[var(--muted-sand)] uppercase tracking-widest mb-1">Signed in as</p>
-                                    <p className="text-sm font-bold text-[var(--off-black)] truncate">{profile?.email}</p>
+                                    <p className="text-sm font-bold text-[var(--off-black)] truncate">{user?.email}</p>
                                 </div>
                                 <div className="p-2">
-                                    <button onClick={() => { setShowLeaderSettings(true); setShowProfileMenu(false); }} className="w-full flex items-center gap-3 px-4 py-3 text-sm font-bold text-[var(--off-black)] hover:bg-[var(--canvas)] rounded-[12px] transition-all">
-                                        <Users className="w-4 h-4 text-[var(--muted-sand)]" /> 팀장 연결 관리
+                                    <button
+                                        onClick={() => { setShowLeaderSettings(true); setShowProfileMenu(false); }}
+                                        className="w-full flex items-center gap-3 px-4 py-3 text-sm font-bold text-[var(--off-black)] hover:bg-[var(--canvas)] rounded-[12px] transition-all group"
+                                    >
+                                        <Users className="w-4 h-4 text-[var(--muted-sand)] group-hover:text-[var(--fin-orange)]" />
+                                        팀장 연결 관리
                                     </button>
                                     <div className="h-[1px] bg-[var(--oat-border)]/30 my-2" />
-                                    <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-3 text-sm font-bold text-red-500 hover:bg-red-50 rounded-[12px] transition-all">
-                                        <LogOut className="w-4 h-4 text-red-400" /> 시스템 로그아웃
+                                    <button
+                                        onClick={handleLogout}
+                                        className="w-full flex items-center gap-3 px-4 py-3 text-sm font-bold text-red-500 hover:bg-red-50 rounded-[12px] transition-all group"
+                                    >
+                                        <LogOut className="w-4 h-4 text-red-400 group-hover:text-red-500" />
+                                        시스템 로그아웃
                                     </button>
                                 </div>
                             </div>
@@ -150,26 +176,45 @@ export function Dashboard() {
             </div>
 
             {viewMode === 'leader' ? (
-                <div className="animate-in fade-in slide-in-from-bottom-4 duration-500"><LeaderDashboard /></div>
+                <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+                    <LeaderDashboard />
+                </div>
             ) : (
                 <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
                     {/* Welcome Header */}
                     <div className="space-y-1">
                         <h2 className="text-4xl font-bold font-outfit text-[var(--off-black)] tracking-tight">
-                            반갑습니다, <span className="text-[var(--fin-orange)]">{profile?.email?.split('@')[0]}</span>님
+                            반갑습니다, <span className="text-[var(--fin-orange)]">{user?.email?.split('@')[0]}</span>님
                         </h2>
-                        <p className="text-[var(--muted-sand)] text-lg font-medium">오늘의 성장을 위해 정준히 환영합니다.</p>
+                        <p className="text-[var(--muted-sand)] text-lg font-medium">오늘의 성장을 위해 정중히 환영합니다.</p>
+                    </div>
+
+                    {/* Motivational Banner */}
+                    <div className="premium-card p-10 border-l-[6px] border-l-[var(--fin-orange)] bg-[#fffdfa] relative overflow-hidden group">
+                        <Quote className="absolute -bottom-6 -right-6 w-40 h-40 text-[var(--fin-orange)]/5 group-hover:scale-110 transition-transform duration-700" />
+                        <div className="flex items-center gap-3 mb-6">
+                            <Sparkles className="w-5 h-5 text-[var(--fin-orange)]" />
+                            <span className="text-xs font-bold text-[var(--fin-orange)] uppercase tracking-[0.2em] font-outfit">Today&apos;s Wisdom</span>
+                        </div>
+                        <p className="text-2xl font-serif font-medium text-[var(--off-black)] leading-[1.4] max-w-3xl relative z-10 italic">
+                            &ldquo;{randomQuote}&rdquo;
+                        </p>
                     </div>
 
                     {/* Stats Grid - V4 Revamp */}
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                         {/* Monthly Goal Card */}
                         <div className="premium-card p-10 space-y-8 relative overflow-hidden group">
-                            <button onClick={() => setShowGoalSettings(true)} className="absolute top-10 right-10 p-2.5 rounded-full border border-[var(--oat-border)] hover:bg-[var(--off-black)] hover:text-white transition-all shadow-sm z-10">
+                            <button
+                                onClick={() => setShowGoalSettings(true)}
+                                className="absolute top-10 right-10 p-2.5 rounded-full border border-[var(--oat-border)] hover:bg-[var(--off-black)] hover:text-white transition-all duration-300 shadow-sm z-10"
+                            >
                                 <Settings className="w-5 h-5" />
                             </button>
                             <h3 className="text-[var(--off-black)] text-2xl font-bold flex items-center gap-4">
-                                <div className="p-3 bg-blue-50 rounded-[12px] shadow-sm"><BarChart3 className="w-7 h-7 text-blue-500" /></div>
+                                <div className="p-3 bg-blue-50 rounded-[12px] shadow-sm">
+                                    <BarChart3 className="w-7 h-7 text-blue-500" />
+                                </div>
                                 이번 달 목표
                             </h3>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -189,7 +234,9 @@ export function Dashboard() {
                         {/* Today's Status Card - New V4 */}
                         <div className="premium-card p-10 space-y-8 border-l-[6px] border-l-green-500">
                             <h3 className="text-[var(--off-black)] text-2xl font-bold flex items-center gap-4">
-                                <div className="p-3 bg-green-50 rounded-[12px] shadow-sm"><Clock className="w-7 h-7 text-green-500" /></div>
+                                <div className="p-3 bg-green-50 rounded-[12px] shadow-sm">
+                                    <Clock className="w-7 h-7 text-green-500" />
+                                </div>
                                 오늘의 활동 설정
                             </h3>
                             <div className="space-y-6">
@@ -221,7 +268,7 @@ export function Dashboard() {
                                     <button
                                         onClick={handleQuickSave}
                                         disabled={saveLoading}
-                                        className="h-14 px-8 bg-[var(--off-black)] text-white font-bold rounded-[8px] hover:bg-[#313130] transition-all shadow-xl disabled:opacity-50"
+                                        className="h-14 px-8 bg-[var(--off-black)] text-white font-bold rounded-[8px] hover:bg-[#313130] transition-all shadow-xl disabled:opacity-50 active:scale-95"
                                     >
                                         {saveLoading ? "저장 중..." : "상태 저장"}
                                     </button>
