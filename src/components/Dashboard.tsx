@@ -24,12 +24,13 @@ const MOTIVATIONAL_QUOTES = [
 
 export function Dashboard() {
     const { profile } = useAuth();
-    const { getTodayLog } = useLogs();
+    const { getTodayLog, getMonthlyStats } = useLogs();
     const [showLogForm, setShowLogForm] = useState(false);
     const [showLeaderSettings, setShowLeaderSettings] = useState(false);
     const [showGoalSettings, setShowGoalSettings] = useState(false);
     const [viewMode, setViewMode] = useState<'agent' | 'leader'>('agent');
     const [todayData, setTodayData] = useState<DailyLog | null>(null);
+    const [monthlyStats, setMonthlyStats] = useState({ totalCalls: 0 });
 
     const randomQuote = useMemo(() => {
         return MOTIVATIONAL_QUOTES[Math.floor(Math.random() * MOTIVATIONAL_QUOTES.length)];
@@ -39,7 +40,10 @@ export function Dashboard() {
         getTodayLog().then((log) => {
             setTodayData(log);
         });
-    }, [getTodayLog, showLogForm]);
+        getMonthlyStats().then(stats => {
+            setMonthlyStats(stats);
+        });
+    }, [getTodayLog, getMonthlyStats, showLogForm]); // Added getMonthlyStats to deps
 
     if (viewMode === 'leader') {
         return (
@@ -56,11 +60,10 @@ export function Dashboard() {
     const stats = {
         monthlyGoalAmount: profile?.monthly_goal_amount || 10000000,
         monthlyGoalCases: profile?.monthly_goal_cases || 50,
-        dailyCallGoal: todayData?.call_target || 50,
-        dailyCallActual: todayData?.call_actual || 0,
+        monthlyActualCalls: monthlyStats.totalCalls, // 어제까지의 누계
     };
 
-    const callProgress = (stats.dailyCallActual / stats.dailyCallGoal) * 100;
+    const callProgress = (stats.monthlyActualCalls / stats.monthlyGoalCases) * 100;
 
     return (
         <div className="p-4 md:p-8 max-w-5xl mx-auto space-y-8 pb-32">
@@ -114,7 +117,7 @@ export function Dashboard() {
                     <div className="flex items-center justify-between">
                         <h3 className="text-slate-300 font-bold flex items-center gap-2">
                             <Phone className="w-5 h-5 text-orange-400" />
-                            오늘의 통화 진행률
+                            어제까지의 누적 콜 수
                         </h3>
                         <span className="text-orange-400 font-bold">{callProgress.toFixed(1)}%</span>
                     </div>
@@ -126,8 +129,8 @@ export function Dashboard() {
                             />
                         </div>
                         <div className="flex justify-between text-sm">
-                            <span className="text-slate-400 font-bold">{stats.dailyCallActual} 연결</span>
-                            <span className="text-slate-200 font-bold">{stats.dailyCallGoal} 목표</span>
+                            <span className="text-slate-400 font-bold">{stats.monthlyActualCalls} 누적</span>
+                            <span className="text-slate-200 font-bold">{stats.monthlyGoalCases} 목표</span>
                         </div>
                     </div>
                 </div>
