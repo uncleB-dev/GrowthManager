@@ -142,7 +142,6 @@ export function LeaderDashboard() {
                         const currentTarget = profile?.current_call_target || log?.call_target || 0;
 
                         return (
-                        return (
                             <button
                                 key={member.id}
                                 onClick={() => handleViewHistory(member.memberUid, member.memberName)}
@@ -171,17 +170,16 @@ export function LeaderDashboard() {
                                 </div>
                             </button>
                         );
-                        );
                     }) : (
-                    <div className="premium-card p-20 text-center space-y-4 border-dashed bg-[var(--canvas)]/50">
-                        <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mx-auto text-[var(--oat-border)] shadow-sm">
-                            <User className="w-8 h-8" />
+                        <div className="premium-card p-20 text-center space-y-4 border-dashed bg-[var(--canvas)]/50">
+                            <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mx-auto text-[var(--oat-border)] shadow-sm">
+                                <User className="w-8 h-8" />
+                            </div>
+                            <div className="space-y-1">
+                                <p className="text-xl font-bold text-[var(--off-black)]">관리 중인 팀원이 없습니다.</p>
+                                <p className="text-[var(--muted-sand)] font-medium">설계사 계정에서 팀장님의 이메일을 등록해달라고 요청하세요.</p>
+                            </div>
                         </div>
-                        <div className="space-y-1">
-                            <p className="text-xl font-bold text-[var(--off-black)]">관리 중인 팀원이 없습니다.</p>
-                            <p className="text-[var(--muted-sand)] font-medium">설계사 계정에서 팀장님의 이메일을 등록해달라고 요청하세요.</p>
-                        </div>
-                    </div>
                     )}
                 </div>
             </div>
