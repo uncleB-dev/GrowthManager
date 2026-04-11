@@ -20,6 +20,7 @@ export default function LoginPage() {
         setLoading(true);
         try {
             await signInWithGoogle();
+            router.push("/");
         } catch (error) {
             console.error("Login failed:", error);
             setLoading(false);
