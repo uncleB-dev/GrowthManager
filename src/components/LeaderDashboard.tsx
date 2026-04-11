@@ -142,74 +142,46 @@ export function LeaderDashboard() {
                         const currentTarget = profile?.current_call_target || log?.call_target || 0;
 
                         return (
+                        return (
                             <button
                                 key={member.id}
                                 onClick={() => handleViewHistory(member.memberUid, member.memberName)}
-                                className="premium-card w-full p-8 flex flex-col md:flex-row md:items-center justify-between gap-8 hover:translate-x-1 transition-all group border-l-[6px] border-l-[var(--oat-border)] hover:border-l-[var(--fin-orange)] text-left"
+                                className="premium-card w-full p-6 flex items-center justify-between hover:translate-x-1 transition-all group border-l-[6px] border-l-[var(--oat-border)] hover:border-l-[var(--fin-orange)] text-left"
                             >
-                                <div className="flex items-center gap-5 min-w-[250px]">
-                                    <div className="w-14 h-14 rounded-[16px] bg-[var(--canvas)] flex items-center justify-center text-[var(--off-black)] shadow-inner">
-                                        <User className="w-7 h-7" />
-                                    </div>
-                                    <div className="space-y-1">
+                                <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-10 flex-1">
+                                    <div className="space-y-1 min-w-[200px]">
                                         <p className="text-xl font-bold text-[var(--off-black)]">{member.memberName}</p>
-                                        <p className="text-xs text-[var(--muted-sand)] font-medium">{member.memberEmail}</p>
-                                        <div className="pt-2 flex gap-2">
-                                            <span className={`px-3 py-1 text-[11px] font-bold rounded-full border uppercase tracking-wider ${currentStatus === '출근' ? 'bg-green-50 text-green-600 border-green-100' : 'bg-gray-50 text-gray-500 border-gray-100'
-                                                }`}>
-                                                {currentStatus}
-                                            </span>
-                                            <span className="px-3 py-1 bg-blue-50 text-blue-600 text-[11px] font-bold rounded-full border border-blue-100 uppercase tracking-wider">
-                                                목표 {currentTarget}건
-                                            </span>
-                                        </div>
+                                        <p className="text-sm text-[var(--muted-sand)] font-medium">{member.memberEmail}</p>
+                                    </div>
+                                    <div className="flex flex-wrap gap-2">
+                                        <span className={`px-4 py-1.5 text-[11px] font-bold rounded-full border uppercase tracking-[0.1em] ${currentStatus === '출근' ? 'bg-green-50 text-green-600 border-green-100' : 'bg-gray-50 text-gray-500 border-gray-100'
+                                            }`}>
+                                            {currentStatus}
+                                        </span>
+                                        <span className="px-4 py-1.5 bg-blue-50 text-blue-600 text-[11px] font-bold rounded-full border border-blue-100 uppercase tracking-[0.1em]">
+                                            오늘 목표 {currentTarget}건
+                                        </span>
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-2 md:grid-cols-3 gap-10 flex-1 items-center justify-end">
-                                    <div className="space-y-2">
-                                        <p className="text-[11px] text-[var(--muted-sand)] uppercase font-bold tracking-widest flex items-center gap-2">
-                                            <Phone className="w-3.5 h-3.5" /> 오늘 연결
-                                        </p>
-                                        <p className="text-lg font-bold text-[var(--off-black)] font-outfit">
-                                            {log?.call_actual || 0} <span className="text-[var(--muted-sand)] text-xs font-medium">/ {currentTarget}</span>
-                                        </p>
-                                    </div>
-                                    <div className="space-y-2">
-                                        <p className="text-[11px] text-[var(--muted-sand)] uppercase font-bold tracking-widest flex items-center gap-2">
-                                            <BarChart3 className="w-3.5 h-3.5 text-indigo-500" /> 오늘 시도
-                                        </p>
-                                        <p className="text-lg font-bold text-indigo-600 font-outfit">
-                                            {log?.call_attempts || 0}
-                                        </p>
-                                    </div>
-                                    <div className="hidden lg:block space-y-2 max-w-[220px]">
-                                        <p className="text-[11px] text-[var(--muted-sand)] uppercase font-bold tracking-widest flex items-center gap-2">
-                                            <MessageSquare className="w-3.5 h-3.5" /> 오늘의 메모
-                                        </p>
-                                        <p className="text-xs text-[var(--off-black)] font-medium italic leading-relaxed line-clamp-2">
-                                            {log?.memo || '-'}
-                                        </p>
-                                    </div>
-                                </div>
-
-                                <div className="hidden md:block">
+                                <div className="ml-4">
                                     <div className="w-10 h-10 rounded-full flex items-center justify-center group-hover:bg-[var(--canvas)] transition-all">
                                         <ArrowRight className="w-5 h-5 text-[var(--oat-border)] group-hover:text-[var(--fin-orange)] group-hover:translate-x-1 transition-all" />
                                     </div>
                                 </div>
                             </button>
                         );
+                        );
                     }) : (
-                        <div className="premium-card p-20 text-center space-y-4 border-dashed bg-[var(--canvas)]/50">
-                            <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mx-auto text-[var(--oat-border)] shadow-sm">
-                                <User className="w-8 h-8" />
-                            </div>
-                            <div className="space-y-1">
-                                <p className="text-xl font-bold text-[var(--off-black)]">관리 중인 팀원이 없습니다.</p>
-                                <p className="text-[var(--muted-sand)] font-medium">설계사 계정에서 팀장님의 이메일을 등록해달라고 요청하세요.</p>
-                            </div>
+                    <div className="premium-card p-20 text-center space-y-4 border-dashed bg-[var(--canvas)]/50">
+                        <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mx-auto text-[var(--oat-border)] shadow-sm">
+                            <User className="w-8 h-8" />
                         </div>
+                        <div className="space-y-1">
+                            <p className="text-xl font-bold text-[var(--off-black)]">관리 중인 팀원이 없습니다.</p>
+                            <p className="text-[var(--muted-sand)] font-medium">설계사 계정에서 팀장님의 이메일을 등록해달라고 요청하세요.</p>
+                        </div>
+                    </div>
                     )}
                 </div>
             </div>
