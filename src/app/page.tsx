@@ -18,14 +18,14 @@ export default function Home() {
 
   if (loading || !user) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-slate-950">
+      <div className="flex items-center justify-center min-h-screen bg-canvas">
         <Loader2 className="w-10 h-10 text-blue-500 animate-spin" />
       </div>
     );
   }
 
   return (
-    <main className="min-h-screen bg-slate-950">
+    <main className="min-h-screen bg-canvas">
       <Dashboard />
     </main>
   );

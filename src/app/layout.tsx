@@ -18,7 +18,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body className={`${inter.variable} ${outfit.variable} font-sans bg-[var(--canvas)] text-[var(--off-black)] antialiased`}>
+      <body className={`${inter.variable} ${outfit.variable} font-sans bg-canvas text-[var(--off-black)] antialiased`}>
         <AuthProvider>
           <div className="min-h-screen max-w-screen-2xl mx-auto">
             {children}
