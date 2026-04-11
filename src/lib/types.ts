@@ -14,6 +14,7 @@ export interface DailyLog {
     work_status: string;
     call_target: number;
     call_actual: number;
+    missed_calls: number;
     performance_amount: number;
     performance_cases: number;
     notable_outcomes: NotableOutcome[];
@@ -23,7 +24,8 @@ export interface DailyLog {
 export interface NotableOutcome {
     name: string;
     age: string;
-    memo: string;
+    memo?: string;
+    leader_request?: string;
 }
 
 export interface Connection {
