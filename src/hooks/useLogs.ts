@@ -40,7 +40,7 @@ export function useLogs() {
             if (data.work_status !== undefined) profileUpdate.current_status = data.work_status;
             if (data.call_target !== undefined) profileUpdate.current_call_target = data.call_target;
 
-            await setDoc(doc(db, "profiles", user.uid), profileUpdate, { merge: true });
+            await setDoc(doc(db, "members", user.uid), profileUpdate, { merge: true });
         }
 
         setLoading(false);
