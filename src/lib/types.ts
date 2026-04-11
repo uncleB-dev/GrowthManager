@@ -5,6 +5,8 @@ export interface UserProfile {
     leaders: string[];
     monthly_goal_amount?: number;
     monthly_goal_cases?: number;
+    current_status?: string;
+    current_call_target?: number;
     createdAt: string;
 }
 

@@ -5,7 +5,7 @@ import { db } from "@/lib/firebase";
 import { collection, query, where, onSnapshot, doc, getDoc, updateDoc, getDocs, orderBy } from "firebase/firestore";
 import { useAuth } from "@/context/AuthContext";
 import { Check, X, User, ArrowRight, BarChart3, Phone, MessageSquare, Calendar, Edit2, Clock } from "lucide-react";
-import { Connection, DailyLog, Profile } from "@/lib/types";
+import { Connection, DailyLog, UserProfile } from "@/lib/types";
 import { useLogs } from "@/hooks/useLogs";
 
 export function LeaderDashboard() {
@@ -13,7 +13,7 @@ export function LeaderDashboard() {
     const { getMonthlyLogs } = useLogs();
     const [connections, setConnections] = useState<Connection[]>([]);
     const [teamLogs, setTeamLogs] = useState<Record<string, DailyLog>>({});
-    const [teamProfiles, setTeamProfiles] = useState<Record<string, Profile>>({});
+    const [teamProfiles, setTeamProfiles] = useState<Record<string, UserProfile>>({});
     const [loading, setLoading] = useState(true);
 
     // Member History Modal State
