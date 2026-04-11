@@ -18,16 +18,17 @@ export function useLogs() {
         return logDoc.exists() ? logDoc.data() as DailyLog : null;
     };
 
-    const saveLog = async (data: Partial<DailyLog>) => {
+    const saveLog = async (data: Partial<DailyLog>, targetDate?: string) => {
         if (!user) return;
         setLoading(true);
         const today = new Date().toISOString().split('T')[0];
-        const logId = `${user.uid}_${today}`;
+        const dateStr = targetDate || today;
+        const logId = `${user.uid}_${dateStr}`;
 
         const logData = {
             ...data,
             uid: user.uid,
-            date: today,
+            date: dateStr,
             updatedAt: new Date().toISOString(),
         };
 
@@ -47,13 +48,33 @@ export function useLogs() {
         return querySnapshot.docs.map(doc => doc.data() as DailyLog);
     };
 
+    const getMonthlyLogs = async () => {
+        if (!user) return [];
+        const now = new Date();
+        const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
+        const q = query(
+            collection(db, "daily_logs"),
+            where("uid", "==", user.uid),
+            orderBy("date", "desc")
+        );
+
+        const querySnapshot = await getDocs(q);
+        const logs: DailyLog[] = [];
+        querySnapshot.forEach(doc => {
+            const data = doc.data() as DailyLog;
+            if (data.date >= firstDayOfMonth) {
+                logs.push(data);
+            }
+        });
+        return logs;
+    };
+
     const getMonthlyStats = async () => {
         if (!user) return { totalCalls: 0 };
         const now = new Date();
         const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
         const today = now.toISOString().split('T')[0];
 
-        // 복합 인덱스 에러를 방지하기 위해 uid로만 쿼리하고 클라이언트에서 필터링합니다.
         const q = query(
             collection(db, "daily_logs"),
             where("uid", "==", user.uid)
@@ -64,8 +85,9 @@ export function useLogs() {
 
         querySnapshot.forEach(doc => {
             const data = doc.data() as DailyLog;
-            // 이번 달 1일부터 어제까지의 데이터만 합산
-            if (data.date >= firstDayOfMonth && data.date < today) {
+            // 이번 달 1일부터 오늘까지의 데이터 합산 (사용자 요청에 따라 오늘 실적도 포함하는 것이 자연스러울 수 있음)
+            // 사용자 요청: "[목표 콜 수 / 시행 콜 수]" 형식에서 시행 콜 수에 오늘 것도 포함되어야 함.
+            if (data.date >= firstDayOfMonth && data.date <= today) {
                 totalCalls += (data.call_actual || 0);
             }
         });
@@ -73,5 +95,5 @@ export function useLogs() {
         return { totalCalls };
     };
 
-    return { getTodayLog, saveLog, getRecentLogs, getMonthlyStats, loading };
+    return { getTodayLog, saveLog, getRecentLogs, getMonthlyLogs, getMonthlyStats, loading };
 }
