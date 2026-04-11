@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/utils/supabase/client';
 import { User } from '@supabase/supabase-js';
 import { db } from '@/lib/firebase';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
@@ -12,14 +12,38 @@ interface AuthContextType {
     user: User | null;
     loading: boolean;
     profile: UserProfile | null;
+    signInWithGoogle: () => Promise<void>;
+    signOut: () => Promise<void>;
 }
 
-const AuthContext = createContext<AuthContextType>({ user: null, loading: true, profile: null });
+const AuthContext = createContext<AuthContextType>({
+    user: null,
+    loading: true,
+    profile: null,
+    signInWithGoogle: async () => { },
+    signOut: async () => { },
+});
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
     const [profile, setProfile] = useState<UserProfile | null>(null);
     const [loading, setLoading] = useState(true);
+    const supabase = createClient();
+
+    const signInWithGoogle = async () => {
+        await supabase.auth.signInWithOAuth({
+            provider: 'google',
+            options: {
+                redirectTo: `${window.location.origin}/auth/callback`,
+            },
+        });
+    };
+
+    const signOut = async () => {
+        await supabase.auth.signOut();
+        setUser(null);
+        setProfile(null);
+    };
 
     useEffect(() => {
         // Check active sessions and subscribe to auth changes
@@ -61,7 +85,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }, []);
 
     return (
-        <AuthContext.Provider value={{ user, loading, profile }}>
+        <AuthContext.Provider value={{ user, loading, profile, signInWithGoogle, signOut }}>
             {children}
         </AuthContext.Provider>
     );
