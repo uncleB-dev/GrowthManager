@@ -56,6 +56,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                     email: firebaseUser.email || "",
                     role: 'agent',
                     leaders: [],
+                    monthly_goal_amount: 0,
+                    monthly_goal_cases: 0,
                     createdAt: new Date().toISOString()
                 };
                 await setDoc(docRef, newProfile);

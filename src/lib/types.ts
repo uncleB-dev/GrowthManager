@@ -1,9 +1,10 @@
 export interface UserProfile {
     uid: string;
-    email: string | null;
+    email: string;
+    role: 'agent' | 'leader';
     leaders: string[];
-    monthly_goal_amount: number;
-    monthly_goal_cases: number;
+    monthly_goal_amount?: number;
+    monthly_goal_cases?: number;
     createdAt: string;
 }
 
