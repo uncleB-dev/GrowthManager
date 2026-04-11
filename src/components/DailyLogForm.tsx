@@ -126,7 +126,7 @@ export function DailyLogForm({ onClose, initialData, onSaved }: { onClose: () =>
                             창 닫기
                         </button>
                         <button
-                            submit="submit"
+                            type="submit"
                             disabled={loading}
                             className={`flex-[2] py-4 rounded-[4px] flex items-center justify-center gap-2 font-outfit font-bold transition-all shadow-xl active:scale-95 ${isSaved
                                 ? "bg-green-600 text-white shadow-green-500/20"
