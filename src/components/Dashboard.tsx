@@ -35,8 +35,8 @@ export function Dashboard() {
     const [showGoalSettings, setShowGoalSettings] = useState(false);
     const [viewMode, setViewMode] = useState<'agent' | 'leader'>('agent');
 
-    // Today's specific data
-    const [todayStatus, setTodayStatus] = useState("출근");
+    // Today's specific data - Initial value: "퇴근"
+    const [todayStatus, setTodayStatus] = useState("퇴근");
     const [todayCallTarget, setTodayCallTarget] = useState(0);
     const [monthlyStats, setMonthlyStats] = useState({ totalCalls: 0 });
     const [monthlyHistory, setMonthlyHistory] = useState<DailyLog[]>([]);
@@ -49,12 +49,21 @@ export function Dashboard() {
         return MOTIVATIONAL_QUOTES[Math.floor(Math.random() * MOTIVATIONAL_QUOTES.length)];
     }, []);
 
+    // 영속성 데이터 동기화: 프로필 데이터가 로드되면 상태 업데이트
+    useEffect(() => {
+        if (profile) {
+            setTodayStatus(profile.current_status || "퇴근");
+            setTodayCallTarget(profile.current_call_target || 0);
+        }
+    }, [profile]);
+
     const fetchAllData = () => {
         if (!user) return;
         getTodayLog().then((log) => {
             if (log) {
-                setTodayStatus(log.work_status || "출근");
-                setTodayCallTarget(log.call_target || 0);
+                // 오늘 저장된 로그가 있으면 덮어씌움 (우선순위: 프로필 < 오늘 로그)
+                if (log.work_status) setTodayStatus(log.work_status);
+                if (log.call_target !== undefined) setTodayCallTarget(log.call_target);
             }
         });
         getMonthlyStats().then(stats => {
@@ -92,7 +101,6 @@ export function Dashboard() {
         signOut(auth);
     };
 
-    // Calculate progress based on the requested format
     const stats = {
         monthlyGoalAmount: profile?.monthly_goal_amount || 0,
         monthlyGoalCases: profile?.monthly_goal_cases || 0,
@@ -110,7 +118,6 @@ export function Dashboard() {
                 </div>
 
                 <div className="flex items-center gap-6">
-                    {/* View Switch Toggle */}
                     <div className="hidden sm:flex bg-[var(--canvas)] p-1 rounded-[14px] border border-[var(--oat-border)]">
                         <button
                             onClick={() => setViewMode('agent')}
@@ -134,7 +141,6 @@ export function Dashboard() {
                         </button>
                     </div>
 
-                    {/* Profile Menu Dropdown */}
                     <div className="relative" ref={menuRef}>
                         <button
                             onClick={() => setShowProfileMenu(!showProfileMenu)}
@@ -218,13 +224,15 @@ export function Dashboard() {
                                 이번 달 목표
                             </h3>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                                <div className="p-6 bg-[var(--canvas)] rounded-[16px] border border-[var(--oat-border)]/50 group-hover:border-blue-200 transition-colors">
+                                <div className="p-6 bg-[var(--canvas)] rounded-[16px] border border-[var(--oat-border)]/50 group-hover:border-blue-200 transition-colors flex flex-col justify-center overflow-hidden">
                                     <p className="text-xs text-[var(--muted-sand)] uppercase font-bold tracking-[0.2em] mb-3">목표 실적</p>
-                                    <p className="text-3xl font-bold text-[var(--off-black)] font-outfit">{formatCurrency(stats.monthlyGoalAmount)}</p>
+                                    <p className="text-2xl sm:text-3xl font-bold text-[var(--off-black)] font-outfit truncate whitespace-nowrap" title={formatCurrency(stats.monthlyGoalAmount)}>
+                                        {formatCurrency(stats.monthlyGoalAmount)}
+                                    </p>
                                 </div>
-                                <div className="p-6 bg-[var(--off-black)] rounded-[16px] text-white shadow-xl shadow-black/10">
+                                <div className="p-6 bg-[var(--off-black)] rounded-[16px] text-white shadow-xl shadow-black/10 flex flex-col justify-center overflow-hidden">
                                     <p className="text-xs text-white/60 uppercase font-bold tracking-[0.2em] mb-3">목표 콜 수 / 시행 콜 수</p>
-                                    <p className="text-3xl font-bold font-outfit tracking-tighter">
+                                    <p className="text-2xl sm:text-3xl font-bold font-outfit tracking-tighter truncate whitespace-nowrap">
                                         {stats.monthlyGoalCases} 건 <span className="text-white/40 font-light mx-2">/</span> {stats.monthlyActualCalls} 건
                                     </p>
                                 </div>

@@ -33,6 +33,16 @@ export function useLogs() {
         };
 
         await setDoc(doc(db, "daily_logs", logId), logData, { merge: true });
+
+        // 실시간 근태 및 목표 지속성을 위해 프로필 문서 업데이트
+        if (data.work_status !== undefined || data.call_target !== undefined) {
+            const profileUpdate: any = {};
+            if (data.work_status !== undefined) profileUpdate.current_status = data.work_status;
+            if (data.call_target !== undefined) profileUpdate.current_call_target = data.call_target;
+
+            await setDoc(doc(db, "profiles", user.uid), profileUpdate, { merge: true });
+        }
+
         setLoading(false);
     };
 
@@ -48,13 +58,15 @@ export function useLogs() {
         return querySnapshot.docs.map(doc => doc.data() as DailyLog);
     };
 
-    const getMonthlyLogs = async () => {
-        if (!user) return [];
+    const getMonthlyLogs = async (targetUid?: string) => {
+        const uid = targetUid || user?.uid;
+        if (!uid) return [];
+
         const now = new Date();
         const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
         const q = query(
             collection(db, "daily_logs"),
-            where("uid", "==", user.uid),
+            where("uid", "==", uid),
             orderBy("date", "desc")
         );
 
