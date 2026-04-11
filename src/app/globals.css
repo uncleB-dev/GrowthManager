@@ -30,7 +30,10 @@
 
 @layer base {
   body {
-    @apply bg-[var(--canvas)] text-[var(--off-black)] antialiased font-sans;
+    background-color: var(--canvas);
+    color: var(--off-black);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   h1,
@@ -39,7 +42,9 @@
   h4,
   h5,
   h6 {
-    @apply font-outfit tracking-[-0.03em] leading-[1.1];
+    font-family: var(--font-outfit);
+    letter-spacing: -0.03em;
+    line-height: 1.1;
   }
 }
 
@@ -47,26 +52,79 @@
 
   /* Modern Gentle Card */
   .premium-card {
-    @apply bg-white border border-[var(--oat-border)] rounded-[12px] shadow-[0px_2px_4px_rgba(17, 17, 17, 0.02), 0px_10px_20px_-5px_rgba(17, 17, 17, 0.03)] transition-all duration-300;
+    background-color: #ffffff;
+    border: 1px solid var(--oat-border);
+    border-radius: 12px;
+    box-shadow: 0px 2px 4px rgba(17, 17, 17, 0.02), 0px 10px 20px -5px rgba(17, 17, 17, 0.03);
+    transition: all 0.3s ease;
   }
 
   /* Gentle Glass Effect (Warm version) */
   .premium-glass {
-    @apply bg-white/70 backdrop-blur-lg border border-[var(--oat-border)]/50 rounded-[12px];
+    background-color: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(222, 219, 214, 0.5);
+    border-radius: 12px;
   }
 
   .premium-input {
-    @apply bg-white border border-[var(--oat-border)] rounded-[8px] px-4 py-3 text-[var(--off-black)] placeholder:text-[var(--muted-sand)] focus:outline-none focus:ring-2 focus:ring-[var(--fin-orange)]/20 focus:border-[var(--fin-orange)] transition-all;
+    background-color: #ffffff;
+    border: 1px solid var(--oat-border);
+    border-radius: 8px;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+    color: var(--off-black);
+    transition: all 0.2s ease;
+  }
+
+  .premium-input:focus {
+    outline: none;
+    border-color: var(--fin-orange);
+    box-shadow: 0 0 0 4px rgba(255, 86, 0, 0.05);
   }
 
   /* Veteran's Primary Button (Gentle yet strong) */
   .btn-premium {
-    @apply bg-[var(--off-black)] hover:bg-[#313130] text-white font-outfit font-bold py-3 px-6 rounded-[4px] transition-all hover:scale-[1.05] active:scale-[0.95];
+    background-color: var(--off-black);
+    color: #ffffff;
+    font-family: var(--font-outfit);
+    font-weight: 700;
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .btn-premium:hover {
+    background-color: #313130;
+    transform: scale(1.05);
+  }
+
+  .btn-premium:active {
+    transform: scale(0.95);
   }
 
   /* Secondary Button for Sub-actions */
   .btn-gentle {
-    @apply bg-white border border-[var(--oat-border)] text-[var(--off-black)] font-outfit font-medium py-3 px-6 rounded-[4px] hover:bg-[var(--canvas)] transition-all;
+    background-color: #ffffff;
+    border: 1px solid var(--oat-border);
+    color: var(--off-black);
+    font-family: var(--font-outfit);
+    font-weight: 500;
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .btn-gentle:hover {
+    background-color: var(--canvas);
   }
 }
 
