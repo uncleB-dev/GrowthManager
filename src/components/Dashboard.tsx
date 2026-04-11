@@ -2,7 +2,7 @@
 
 import { useAuth } from "@/context/AuthContext";
 import { formatCurrency } from "@/lib/utils";
-import { User, Settings, BarChart3, Quote, Sparkles, LayoutDashboard, Users, LogOut, ChevronDown, ListChecks, Calendar, Clock, Edit2 } from "lucide-react";
+import { User, Settings, BarChart3, Quote, Sparkles, LayoutDashboard, Users, LogOut, ChevronDown, ListChecks, Calendar, Clock, Edit2, X } from "lucide-react";
 import { useState, useEffect, useMemo, useRef } from "react";
 import { DailyLogForm } from "./DailyLogForm";
 import { LeaderSettings } from "./LeaderSettings";
