@@ -53,7 +53,7 @@ export function LeaderDashboard() {
                     // Fetch Member Profile for Real-time Status Persistence
                     const profDoc = await getDoc(doc(db, "profiles", memberUid));
                     if (profDoc.exists()) {
-                        setTeamProfiles(prev => ({ ...prev, [memberUid]: profDoc.data() as Profile }));
+                        setTeamProfiles(prev => ({ ...prev, [memberUid]: profDoc.data() as UserProfile }));
                     }
                 });
             }
