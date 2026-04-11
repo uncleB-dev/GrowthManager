@@ -13,7 +13,7 @@ export function useLogs() {
     const getTodayLog = async () => {
         if (!user) return null;
         const today = new Date().toISOString().split('T')[0];
-        const logId = `${user.id}_${today}`;
+        const logId = `${user.uid}_${today}`;
         const logDoc = await getDoc(doc(db, "daily_logs", logId));
         return logDoc.exists() ? logDoc.data() as DailyLog : null;
     };
