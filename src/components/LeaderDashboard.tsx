@@ -4,9 +4,7 @@ import { useState, useEffect } from "react";
 import { db } from "@/lib/firebase";
 import { collection, query, where, onSnapshot, doc, updateDoc, getDocs } from "firebase/firestore";
 import { useAuth } from "@/context/AuthContext";
-import { Check, X, User, ArrowRight, BarChart3, Phone } from "lucide-react";
-import { formatCurrency } from "@/lib/utils";
-
+import { Check, X, User, ArrowRight, BarChart3, Phone, MessageSquare } from "lucide-react";
 import { Connection, DailyLog } from "@/lib/types";
 
 export function LeaderDashboard() {
