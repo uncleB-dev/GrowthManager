@@ -36,12 +36,13 @@ export function useTeam() {
             return;
         }
 
-        // 2. Create a connection request
-        await addDoc(collection(db, "connections"), {
+        // 2. Create a connection request with a predictable ID for security rules
+        const connId = `${leaderEmail}_${user.uid}`;
+        await setDoc(doc(db, "connections", connId), {
             leaderEmail,
             memberUid: user.uid,
             memberEmail: profile.email,
-            memberName: profile.email?.split('@')[0], // Simplified name
+            memberName: profile.email?.split('@')[0],
             status: 'pending',
             createdAt: new Date().toISOString(),
         });
