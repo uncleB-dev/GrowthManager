@@ -51,7 +51,8 @@ export function LeaderDashboard() {
                     }
 
                     // Fetch Member Profile for Real-time Status Persistence
-                    const profDoc = await getDoc(doc(db, "profiles", memberUid));
+                    // Fetch Member Profile for Real-time Status Persistence (members 컬렉션 사용)
+                    const profDoc = await getDoc(doc(db, "members", memberUid));
                     if (profDoc.exists()) {
                         setTeamProfiles(prev => ({ ...prev, [memberUid]: profDoc.data() as UserProfile }));
                     }
@@ -63,7 +64,9 @@ export function LeaderDashboard() {
     }, [user]);
 
     const handleViewHistory = async (memberUid: string, memberName: string) => {
-        setSelectedMember({ uid: memberUid, name: memberName });
+        const profile = teamProfiles[memberUid];
+        const displayName = profile?.name || memberName;
+        setSelectedMember({ uid: memberUid, name: displayName });
         setHistoryLoading(true);
         const logs = await getMonthlyLogs(memberUid);
         setMemberHistory(logs);
@@ -140,16 +143,17 @@ export function LeaderDashboard() {
                         // 실시간 상태는 프로필에서, 나머지 수치는 오늘 로그에서
                         const currentStatus = profile?.current_status || log?.work_status || "퇴근";
                         const currentTarget = profile?.current_call_target || log?.call_target || 0;
+                        const displayName = profile?.name || member.memberName;
 
                         return (
                             <button
                                 key={member.id}
-                                onClick={() => handleViewHistory(member.memberUid, member.memberName)}
+                                onClick={() => handleViewHistory(member.memberUid, displayName)}
                                 className="premium-card w-full p-6 flex items-center justify-between hover:translate-x-1 transition-all group border-l-[6px] border-l-[var(--oat-border)] hover:border-l-[var(--fin-orange)] text-left"
                             >
                                 <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-10 flex-1">
                                     <div className="space-y-1 min-w-[200px]">
-                                        <p className="text-xl font-bold text-[var(--off-black)]">{member.memberName}</p>
+                                        <p className="text-xl font-bold text-[var(--off-black)]">{displayName}</p>
                                         <p className="text-sm text-[var(--muted-sand)] font-medium">{member.memberEmail}</p>
                                     </div>
                                     <div className="flex flex-wrap gap-2">
