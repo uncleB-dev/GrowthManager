@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { db } from "@/lib/firebase";
-import { doc, getDoc, setDoc, collection, query, where, getDocs, orderBy, limit } from "firebase/firestore";
+import { doc, getDoc, setDoc, collection, query, where, getDocs, limit } from "firebase/firestore";
 import { useAuth } from "@/context/AuthContext";
 import { DailyLog } from "@/lib/types";
 
@@ -46,16 +46,24 @@ export function useLogs() {
         setLoading(false);
     };
 
+    /**
+     * Firebase 복합 인덱스 에러를 방지하기 위해 orderBy를 제거하고 
+     * 클라이언트 사이드에서 메모리 정렬을 수행합니다.
+     */
     const getRecentLogs = async (days = 7) => {
         if (!user) return [];
         const q = query(
             collection(db, "daily_logs"),
-            where("uid", "==", user.uid),
-            orderBy("date", "desc"),
-            limit(days)
+            where("uid", "==", user.uid)
+            // orderBy("date", "desc") 제거: 복합 인덱스 요구 방지
         );
         const querySnapshot = await getDocs(q);
-        return querySnapshot.docs.map(doc => doc.data() as DailyLog);
+        const logs = querySnapshot.docs.map(doc => doc.data() as DailyLog);
+
+        // 클라이언트 사이드 정렬 및 제한
+        return logs
+            .sort((a, b) => b.date.localeCompare(a.date))
+            .slice(0, days);
     };
 
     const getMonthlyLogs = async (targetUid?: string) => {
@@ -64,10 +72,11 @@ export function useLogs() {
 
         const now = new Date();
         const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
+
         const q = query(
             collection(db, "daily_logs"),
-            where("uid", "==", uid),
-            orderBy("date", "desc")
+            where("uid", "==", uid)
+            // orderBy("date", "desc") 제거: 복합 인덱스 요구 방지
         );
 
         const querySnapshot = await getDocs(q);
@@ -78,7 +87,9 @@ export function useLogs() {
                 logs.push(data);
             }
         });
-        return logs;
+
+        // 클라이언트 사이드 정렬
+        return logs.sort((a, b) => b.date.localeCompare(a.date));
     };
 
     const getMonthlyStats = async () => {
@@ -97,8 +108,6 @@ export function useLogs() {
 
         querySnapshot.forEach(doc => {
             const data = doc.data() as DailyLog;
-            // 이번 달 1일부터 오늘까지의 데이터 합산 (사용자 요청에 따라 오늘 실적도 포함하는 것이 자연스러울 수 있음)
-            // 사용자 요청: "[목표 콜 수 / 시행 콜 수]" 형식에서 시행 콜 수에 오늘 것도 포함되어야 함.
             if (data.date >= firstDayOfMonth && data.date <= today) {
                 totalCalls += (data.call_actual || 0);
             }
