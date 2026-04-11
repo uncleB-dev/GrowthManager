@@ -24,6 +24,8 @@
   --color-off-black: var(--off-black);
   --color-oat: var(--oat-border);
   --color-fin: var(--fin-orange);
+  --font-outfit: var(--font-outfit);
+  --font-inter: var(--font-inter);
 }
 
 @layer base {
