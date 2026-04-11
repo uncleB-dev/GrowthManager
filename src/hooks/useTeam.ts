@@ -42,7 +42,7 @@ export function useTeam() {
             leaderEmail,
             memberUid: user.uid,
             memberEmail: profile.email,
-            memberName: profile.email?.split('@')[0],
+            memberName: profile.name || profile.email?.split('@')[0],
             status: 'pending',
             createdAt: new Date().toISOString(),
         });

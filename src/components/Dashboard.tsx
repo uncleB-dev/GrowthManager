@@ -213,7 +213,7 @@ export function Dashboard() {
                     {/* Welcome Header */}
                     <div className="space-y-1">
                         <h2 className="text-4xl font-bold font-outfit text-[var(--off-black)] tracking-tight">
-                            반갑습니다, <span className="text-[var(--fin-orange)]">{user?.email?.split('@')[0]}</span>님
+                            반갑습니다, <span className="text-[var(--fin-orange)]">{profile?.name || user?.displayName || user?.email?.split('@')[0]}</span>님
                         </h2>
                         <p className="text-[var(--muted-sand)] text-lg font-medium">오늘의 성장을 위해 정중히 환영합니다.</p>
                     </div>

@@ -47,13 +47,22 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         try {
             const docRef = doc(db, 'members', firebaseUser.uid);
             const docSnap = await getDoc(docRef);
+            const displayName = firebaseUser.displayName || firebaseUser.email?.split('@')[0] || "";
 
             if (docSnap.exists()) {
-                setProfile(docSnap.data() as UserProfile);
+                const existingData = docSnap.data() as UserProfile;
+                // 이름 정보가 없거나 구글 이름과 다를 경우 업데이트
+                if (!existingData.name || (firebaseUser.displayName && existingData.name !== firebaseUser.displayName)) {
+                    await setDoc(docRef, { name: displayName }, { merge: true });
+                    setProfile({ ...existingData, name: displayName });
+                } else {
+                    setProfile(existingData);
+                }
             } else {
                 const newProfile: UserProfile = {
                     uid: firebaseUser.uid,
                     email: firebaseUser.email || "",
+                    name: displayName,
                     role: 'agent',
                     leaders: [],
                     monthly_goal_amount: 0,

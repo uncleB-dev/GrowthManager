@@ -1,6 +1,7 @@
 export interface UserProfile {
     uid: string;
     email: string;
+    name?: string;
     role: 'agent' | 'leader';
     leaders: string[];
     monthly_goal_amount?: number;
