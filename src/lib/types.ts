@@ -13,19 +13,11 @@ export interface DailyLog {
     date: string;
     work_status: string;
     call_target: number;
+    call_attempts: number;
     call_actual: number;
     missed_calls: number;
-    performance_amount: number;
-    performance_cases: number;
-    notable_outcomes: NotableOutcome[];
+    memo: string;
     updatedAt: string;
-}
-
-export interface NotableOutcome {
-    name: string;
-    age: string;
-    memo?: string;
-    leader_request?: string;
 }
 
 export interface Connection {
