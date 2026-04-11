@@ -18,15 +18,17 @@ export function LeaderDashboard() {
     useEffect(() => {
         if (!user?.email) return;
 
-        // 1. Listen for connection requests
+        // 1. Listen for connection requests (Simplified query to avoid index issues)
         const q = query(
             collection(db, "connections"),
-            where("leaderEmail", "==", user.email),
-            where("status", "in", ["pending", "accepted"])
+            where("leaderEmail", "==", user.email)
         );
 
         const unsubscribe = onSnapshot(q, (snapshot) => {
-            const connList = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Connection));
+            const allConns = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Connection));
+            // Filter status in JavaScript for now
+            const connList = allConns.filter(c => c.status === "pending" || c.status === "accepted");
+
             setConnections(connList);
             setLoading(false);
 

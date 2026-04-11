@@ -76,12 +76,14 @@ export function useTeam() {
 
         const q = query(
             collection(db, "connections"),
-            where("memberUid", "==", user.uid),
-            where("status", "!=", "removed")
+            where("memberUid", "==", user.uid)
+            // status 필터를 제거하여 복합 인덱스 요구사항 우회
         );
 
         return onSnapshot(q, (snapshot) => {
-            const list = snapshot.docs.map(d => ({ id: d.id, ...d.data() } as Connection));
+            const list = snapshot.docs
+                .map(d => ({ id: d.id, ...d.data() } as Connection))
+                .filter(c => c.status !== 'removed'); // 클라이언트 사이드 필터링
             callback(list);
         });
     }, [user]);
