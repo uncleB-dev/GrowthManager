@@ -61,7 +61,7 @@ export function LeaderDashboard() {
     const teamMembers = connections.filter(c => c.status === 'accepted');
 
     return (
-        <div className="p-4 md:p-8 max-w-5xl mx-auto space-y-10 pb-40">
+        <div className="p-4 md:p-8 max-w-5xl mx-auto space-y-10 pb-20">
             <div className="flex justify-between items-center">
                 <div className="space-y-1">
                     <h1 className="text-3xl font-bold font-outfit text-[var(--off-black)] tracking-tight">팀 모니터링</h1>
