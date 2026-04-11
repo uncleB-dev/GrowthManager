@@ -6,17 +6,19 @@ import { User } from '@supabase/supabase-js';
 import { db } from '@/lib/firebase';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 
+import { UserProfile } from '@/lib/types';
+
 interface AuthContextType {
     user: User | null;
     loading: boolean;
-    profile: any | null;
+    profile: UserProfile | null;
 }
 
 const AuthContext = createContext<AuthContextType>({ user: null, loading: true, profile: null });
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
-    const [profile, setProfile] = useState<any | null>(null);
+    const [profile, setProfile] = useState<UserProfile | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -30,9 +32,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 const userDoc = await getDoc(userDocRef);
 
                 if (!userDoc.exists()) {
-                    const newProfile = {
+                    const newProfile: UserProfile = {
                         uid: sessionUser.id,
-                        email: sessionUser.email,
+                        email: sessionUser.email || null,
                         leaders: [],
                         monthly_goal_amount: 0,
                         monthly_goal_cases: 0,
@@ -41,7 +43,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                     await setDoc(userDocRef, newProfile);
                     setProfile(newProfile);
                 } else {
-                    setProfile(userDoc.data());
+                    setProfile(userDoc.data() as UserProfile);
                 }
             } else {
                 setProfile(null);

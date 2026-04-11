@@ -2,13 +2,14 @@
 
 import { useAuth } from "@/context/AuthContext";
 import { formatCurrency } from "@/lib/utils";
-import { TrendingUp, Phone, CheckCircle, User, Settings, BarChart3, Loader2, Users } from "lucide-react";
+import { TrendingUp, Phone, CheckCircle, User, Settings, BarChart3 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { DailyLogForm } from "./DailyLogForm";
 import { LeaderSettings } from "./LeaderSettings";
 import { LeaderDashboard } from "./LeaderDashboard";
 import { MonthlyGoalSettings } from "./MonthlyGoalSettings";
 import { useLogs } from "@/hooks/useLogs";
+import { DailyLog } from "@/lib/types";
 
 export function Dashboard() {
     const { profile } = useAuth();
@@ -17,15 +18,13 @@ export function Dashboard() {
     const [showLeaderSettings, setShowLeaderSettings] = useState(false);
     const [showGoalSettings, setShowGoalSettings] = useState(false);
     const [viewMode, setViewMode] = useState<'agent' | 'leader'>('agent');
-    const [todayData, setTodayData] = useState<any>(null);
-    const [loading, setLoading] = useState(true);
+    const [todayData, setTodayData] = useState<DailyLog | null>(null);
 
     useEffect(() => {
         getTodayLog().then((log) => {
             setTodayData(log);
-            setLoading(false);
         });
-    }, [showLogForm]);
+    }, [getTodayLog, showLogForm]); // Added getTodayLog to dependencies
 
     if (viewMode === 'leader') {
         return (

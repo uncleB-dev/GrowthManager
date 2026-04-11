@@ -11,8 +11,7 @@ import {
     updateDoc,
     arrayUnion,
     arrayRemove,
-    addDoc,
-    onSnapshot
+    addDoc
 } from "firebase/firestore";
 import { useAuth } from "@/context/AuthContext";
 
@@ -34,8 +33,6 @@ export function useTeam() {
             setLoading(false);
             return;
         }
-
-        const leaderData = querySnapshot.docs[0].data();
 
         // 2. Create a connection request
         await addDoc(collection(db, "connections"), {

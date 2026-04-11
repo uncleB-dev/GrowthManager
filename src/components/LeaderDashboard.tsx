@@ -7,19 +7,12 @@ import { useAuth } from "@/context/AuthContext";
 import { Check, X, User, ArrowRight, BarChart3, Phone } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 
-interface Connection {
-    id: string;
-    leaderEmail: string;
-    memberUid: string;
-    memberEmail: string;
-    memberName: string;
-    status: 'pending' | 'accepted' | 'rejected' | 'removed';
-}
+import { Connection, DailyLog } from "@/lib/types";
 
 export function LeaderDashboard() {
     const { user } = useAuth();
     const [connections, setConnections] = useState<Connection[]>([]);
-    const [teamLogs, setTeamLogs] = useState<any>({});
+    const [teamLogs, setTeamLogs] = useState<Record<string, DailyLog>>({});
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -49,9 +42,9 @@ export function LeaderDashboard() {
                 );
 
                 getDocs(logQ).then(logSnap => {
-                    const logs: any = {};
+                    const logs: Record<string, DailyLog> = {};
                     logSnap.forEach(d => {
-                        logs[d.data().uid] = d.data();
+                        logs[d.data().uid] = d.data() as DailyLog;
                     });
                     setTeamLogs(logs);
                 });

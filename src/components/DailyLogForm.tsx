@@ -28,7 +28,7 @@ export function DailyLogForm({ onClose }: { onClose: () => void }) {
                 });
             }
         });
-    }, []);
+    }, [getTodayLog]); // Added getTodayLog to dependencies
 
     const handleAddOutcome = () => {
         setFormData({

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useTeam } from "@/hooks/useTeam";
 import { useAuth } from "@/context/AuthContext";
-import { X, Search, UserPlus, Trash2, Clock, CheckCircle } from "lucide-react";
+import { X, Search, Trash2, Clock } from "lucide-react";
 
 export function LeaderSettings({ onClose }: { onClose: () => void }) {
     const { profile } = useAuth();
