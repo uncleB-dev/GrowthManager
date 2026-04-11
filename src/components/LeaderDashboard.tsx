@@ -137,21 +137,29 @@ export function LeaderDashboard() {
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-2 gap-8 md:flex md:gap-12 flex-1 items-center justify-end">
+                                <div className="grid grid-cols-2 md:grid-cols-3 gap-6 flex-1 items-center justify-end">
                                     <div className="space-y-1">
                                         <p className="text-[10px] text-slate-500 uppercase flex items-center gap-1">
-                                            <Phone className="w-3 h-3" /> 통화 수
+                                            <Phone className="w-3 h-3" /> 연결 / 목표
                                         </p>
                                         <p className="text-sm font-bold text-slate-200">
                                             {log?.call_actual || 0} / {log?.call_target || '-'}
                                         </p>
                                     </div>
-                                    <div className="space-y-1 text-right md:text-left">
-                                        <p className="text-[10px] text-slate-500 uppercase flex items-center justify-end md:justify-start gap-1">
-                                            <BarChart3 className="w-3 h-3" /> 오늘 실적
+                                    <div className="space-y-1">
+                                        <p className="text-[10px] text-slate-500 uppercase flex items-center gap-1">
+                                            <BarChart3 className="w-3 h-3" /> 시도 콜
                                         </p>
-                                        <p className="text-sm font-bold text-blue-400">
-                                            {formatCurrency(log?.performance_amount || 0)}
+                                        <p className="text-sm font-bold text-purple-400">
+                                            {log?.call_attempts || 0}
+                                        </p>
+                                    </div>
+                                    <div className="hidden lg:block space-y-1 max-w-[200px]">
+                                        <p className="text-[10px] text-slate-500 uppercase flex items-center gap-1">
+                                            <MessageSquare className="w-3 h-3" /> 메모
+                                        </p>
+                                        <p className="text-xs text-slate-400 truncate">
+                                            {log?.memo || '-'}
                                         </p>
                                     </div>
                                 </div>
