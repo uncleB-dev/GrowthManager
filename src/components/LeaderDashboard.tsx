@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { db } from "@/lib/firebase";
-import { collection, query, where, onSnapshot, doc, updateDoc, getDocs } from "firebase/firestore";
+import { collection, query, where, onSnapshot, doc, getDoc, updateDoc, getDocs } from "firebase/firestore";
 import { useAuth } from "@/context/AuthContext";
 import { Check, X, User, ArrowRight, BarChart3, Phone, MessageSquare } from "lucide-react";
 import { Connection, DailyLog } from "@/lib/types";
@@ -30,17 +30,18 @@ export function LeaderDashboard() {
 
             const acceptedMembers = connList.filter(c => c.status === 'accepted').map(c => c.memberUid);
             if (acceptedMembers.length > 0) {
+                // 복합 인덱스 에러를 방지하고 10명 이상의 팀원도 처리할 수 있도록 개별 getDoc 호출로 변경합니다.
                 const today = new Date().toISOString().split('T')[0];
-                const logQ = query(
-                    collection(db, "daily_logs"),
-                    where("uid", "in", acceptedMembers.slice(0, 10)),
-                    where("date", "==", today)
-                );
+                const logPromises = acceptedMembers.map(async (memberUid) => {
+                    const logId = `${memberUid}_${today}`;
+                    const d = await getDoc(doc(db, "daily_logs", logId));
+                    return d.exists() ? (d.data() as DailyLog) : null;
+                });
 
-                getDocs(logQ).then(logSnap => {
+                Promise.all(logPromises).then(results => {
                     const logs: Record<string, DailyLog> = {};
-                    logSnap.forEach(d => {
-                        logs[d.data().uid] = d.data() as DailyLog;
+                    results.forEach(log => {
+                        if (log) logs[log.uid] = log;
                     });
                     setTeamLogs(logs);
                 });

@@ -53,18 +53,21 @@ export function useLogs() {
         const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
         const today = now.toISOString().split('T')[0];
 
+        // 복합 인덱스 에러를 방지하기 위해 uid로만 쿼리하고 클라이언트에서 필터링합니다.
         const q = query(
             collection(db, "daily_logs"),
-            where("uid", "==", user.uid),
-            where("date", ">=", firstDayOfMonth),
-            where("date", "<", today)
+            where("uid", "==", user.uid)
         );
 
         const querySnapshot = await getDocs(q);
         let totalCalls = 0;
+
         querySnapshot.forEach(doc => {
             const data = doc.data() as DailyLog;
-            totalCalls += (data.call_actual || 0);
+            // 이번 달 1일부터 어제까지의 데이터만 합산
+            if (data.date >= firstDayOfMonth && data.date < today) {
+                totalCalls += (data.call_actual || 0);
+            }
         });
 
         return { totalCalls };
