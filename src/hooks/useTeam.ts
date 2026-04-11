@@ -11,8 +11,8 @@ import {
     updateDoc,
     arrayUnion,
     arrayRemove,
-    addDoc,
-    onSnapshot
+    onSnapshot,
+    setDoc
 } from "firebase/firestore";
 import { useAuth } from "@/context/AuthContext";
 import { Connection } from "@/lib/types";
