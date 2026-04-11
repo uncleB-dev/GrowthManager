@@ -1,54 +1,87 @@
 @import "tailwindcss";
 
 :root {
-  --primary: #3b82f6;
-  --primary-hover: #2563eb;
-  --accent: #f97316;
+  /* Intercom-inspired Warm Palette */
+  --canvas: #faf9f6;
+  --off-black: #111111;
+  --oat-border: #dedbd6;
+  --pure-white: #ffffff;
+  --fin-orange: #ff5600;
+  --muted-sand: #7b7b78;
+
+  /* Report Palette */
+  --report-blue: #65b5ff;
+  --report-green: #0bdf50;
+  --report-red: #c41c1c;
+
+  /* Primary Accent Role */
+  --primary: var(--off-black);
+  --primary-hover: #313130;
 }
 
 @theme {
-  --color-primary: var(--primary);
-  --color-primary-hover: var(--primary-hover);
-  --color-accent: var(--accent);
+  --color-canvas: var(--canvas);
+  --color-off-black: var(--off-black);
+  --color-oat: var(--oat-border);
+  --color-fin: var(--fin-orange);
 }
 
 @layer base {
   body {
-    @apply bg-slate-950 text-slate-50;
+    @apply bg-[var(--canvas)] text-[var(--off-black)] antialiased font-sans;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-outfit tracking-[-0.03em] leading-[1.1];
   }
 }
 
 @layer components {
-  .glass-card {
-    @apply bg-slate-900/40 backdrop-blur-md border border-slate-800/50 rounded-2xl shadow-xl;
+
+  /* Modern Gentle Card */
+  .premium-card {
+    @apply bg-white border border-[var(--oat-border)] rounded-[12px] shadow-[0px_2px_4px_rgba(17, 17, 17, 0.02), 0px_10px_20px_-5px_rgba(17, 17, 17, 0.03)] transition-all duration-300;
   }
 
-  .glass-input {
-    @apply bg-slate-900/60 border border-slate-800 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all;
+  /* Gentle Glass Effect (Warm version) */
+  .premium-glass {
+    @apply bg-white/70 backdrop-blur-lg border border-[var(--oat-border)]/50 rounded-[12px];
   }
 
-  .btn-primary {
-    @apply bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 px-6 rounded-xl transition-all active:scale-95 shadow-lg shadow-blue-500/20;
+  .premium-input {
+    @apply bg-white border border-[var(--oat-border)] rounded-[8px] px-4 py-3 text-[var(--off-black)] placeholder:text-[var(--muted-sand)] focus:outline-none focus:ring-2 focus:ring-[var(--fin-orange)]/20 focus:border-[var(--fin-orange)] transition-all;
   }
 
-  .btn-secondary {
-    @apply bg-slate-800 hover:bg-slate-700 text-slate-100 font-semibold py-3 px-6 rounded-xl transition-all active:scale-95;
+  /* Veteran's Primary Button (Gentle yet strong) */
+  .btn-premium {
+    @apply bg-[var(--off-black)] hover:bg-[#313130] text-white font-outfit font-bold py-3 px-6 rounded-[4px] transition-all hover:scale-[1.05] active:scale-[0.95];
+  }
+
+  /* Secondary Button for Sub-actions */
+  .btn-gentle {
+    @apply bg-white border border-[var(--oat-border)] text-[var(--off-black)] font-outfit font-medium py-3 px-6 rounded-[4px] hover:bg-[var(--canvas)] transition-all;
   }
 }
 
-/* Custom Scrollbar */
+/* Custom Scrollbar (Gentle) */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 5px;
 }
 
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: var(--canvas);
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-slate-800 rounded-full;
+  background: var(--oat-border);
+  border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  @apply bg-slate-700;
+  background: var(--muted-sand);
 }

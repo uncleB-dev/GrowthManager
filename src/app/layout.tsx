@@ -18,9 +18,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body className={`${inter.variable} ${outfit.variable} font-sans bg-slate-950 text-slate-50 antialiased`}>
+      <body className={`${inter.variable} ${outfit.variable} font-sans bg-[var(--canvas)] text-[var(--off-black)] antialiased`}>
         <AuthProvider>
-          <div className="min-h-screen bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-900/20 via-slate-950 to-slate-950">
+          <div className="min-h-screen max-w-screen-2xl mx-auto">
             {children}
           </div>
         </AuthProvider>

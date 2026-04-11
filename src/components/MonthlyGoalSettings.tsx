@@ -25,50 +25,62 @@ export function MonthlyGoalSettings({ onClose }: { onClose: () => void }) {
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
-            <div className="glass-card w-full max-w-md p-6 md:p-8 space-y-6">
-                <div className="flex justify-between items-center">
-                    <h2 className="text-2xl font-bold font-outfit text-white">월간 목표 설정</h2>
-                    <button onClick={onClose} className="p-2 hover:bg-slate-800 rounded-full transition-colors">
-                        <X className="w-6 h-6" />
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#111111]/30 backdrop-blur-md animate-in fade-in duration-300">
+            <div className="premium-card w-full max-w-md p-8 md:p-10 space-y-8 animate-in zoom-in-95 duration-300 shadow-2xl">
+                <div className="flex justify-between items-center border-b border-[var(--oat-border)] pb-6">
+                    <div className="space-y-1">
+                        <h2 className="text-2xl font-bold font-outfit text-[var(--off-black)]">월간 목표 설정</h2>
+                        <p className="text-xs text-[var(--muted-sand)] font-medium">당신의 비전을 구체적인 수치로 입력하세요.</p>
+                    </div>
+                    <button onClick={onClose} className="p-2 hover:bg-[var(--canvas)] rounded-full transition-all text-[var(--muted-sand)]">
+                        <X className="w-5 h-5" />
                     </button>
                 </div>
 
-                <form onSubmit={handleSave} className="space-y-6">
-                    <div className="space-y-4">
+                <form onSubmit={handleSave} className="space-y-8">
+                    <div className="space-y-6">
                         <div className="space-y-2">
-                            <label className="text-sm font-medium text-slate-300 flex items-center gap-2">
-                                <CircleDollarSign className="w-4 h-4 text-blue-400" /> 월간 목표 실적 (원)
+                            <label className="text-xs font-bold text-[var(--muted-sand)] uppercase tracking-wider flex items-center gap-2 px-1">
+                                <CircleDollarSign className="w-4 h-4 text-blue-500" /> 월간 목표 실적 (원)
                             </label>
                             <input
                                 type="number"
-                                className="glass-input w-full text-blue-400 font-bold"
+                                className="premium-input w-full h-14 text-xl font-bold font-outfit text-blue-600"
                                 value={goalAmount}
                                 onChange={(e) => setGoalAmount(parseInt(e.target.value) || 0)}
                             />
                         </div>
 
                         <div className="space-y-2">
-                            <label className="text-sm font-medium text-slate-300 flex items-center gap-2">
-                                <Hash className="w-4 h-4 text-orange-400" /> 월간 목표 건수
+                            <label className="text-xs font-bold text-[var(--muted-sand)] uppercase tracking-wider flex items-center gap-2 px-1">
+                                <Hash className="w-4 h-4 text-[var(--fin-orange)]" /> 월간 목표 건수
                             </label>
                             <input
                                 type="number"
-                                className="glass-input w-full text-orange-400 font-bold"
+                                className="premium-input w-full h-14 text-xl font-bold font-outfit text-[var(--fin-orange)]"
                                 value={goalCases}
                                 onChange={(e) => setGoalCases(parseInt(e.target.value) || 0)}
                             />
                         </div>
                     </div>
 
-                    <button
-                        type="submit"
-                        disabled={loading}
-                        className="btn-primary w-full flex items-center justify-center gap-2"
-                    >
-                        <Target className="w-5 h-5" />
-                        {loading ? "저장 중..." : "목표 확정하기"}
-                    </button>
+                    <div className="flex gap-4">
+                        <button
+                            type="button"
+                            onClick={onClose}
+                            className="btn-gentle flex-1 py-4 text-sm font-bold active:scale-95"
+                        >
+                            취소
+                        </button>
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            className="btn-premium flex-[2] py-4 flex items-center justify-center gap-2 font-bold active:scale-95 shadow-xl disabled:opacity-50"
+                        >
+                            <Target className="w-5 h-5" />
+                            {loading ? "데이터 저장 중..." : "목표 확정하기"}
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>

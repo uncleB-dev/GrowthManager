@@ -44,28 +44,31 @@ export function DailyLogForm({ onClose }: { onClose: () => void }) {
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/90 backdrop-blur-md">
-            <div className="glass-card w-full max-w-lg p-6 md:p-8 space-y-6 animate-in zoom-in-95 duration-200">
-                <div className="flex justify-between items-center border-b border-slate-800 pb-4">
-                    <h2 className="text-2xl font-bold font-outfit text-white tracking-tight">오늘의 영업 기록</h2>
-                    <button onClick={onClose} className="p-2 hover:bg-slate-800 rounded-full transition-colors text-slate-400">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#111111]/30 backdrop-blur-md animate-in fade-in duration-300">
+            <div className="premium-card w-full max-w-lg p-8 md:p-10 space-y-8 animate-in zoom-in-95 slide-in-from-bottom-4 duration-300 shadow-2xl relative">
+                <div className="flex justify-between items-center border-b border-[var(--oat-border)] pb-6">
+                    <div className="space-y-1">
+                        <h2 className="text-3xl font-bold font-outfit text-[var(--off-black)] tracking-tight">오늘의 영업 기록</h2>
+                        <p className="text-sm text-[var(--muted-sand)] font-medium">수고 많으셨습니다. 오늘의 발자취를 남겨주세요.</p>
+                    </div>
+                    <button onClick={onClose} className="p-2.5 hover:bg-[var(--canvas)] rounded-full transition-all text-[var(--muted-sand)] hover:text-[var(--off-black)]">
                         <X className="w-6 h-6" />
                     </button>
                 </div>
 
-                <form onSubmit={handleSubmit} className="space-y-6">
+                <form onSubmit={handleSubmit} className="space-y-8">
                     {/* Status */}
-                    <div className="space-y-2">
-                        <label className="text-xs font-bold text-slate-400 uppercase tracking-widest px-1">근무 상태</label>
-                        <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                    <div className="space-y-3">
+                        <label className="text-xs font-bold text-[var(--muted-sand)] uppercase tracking-[0.2em] px-1">근무 상태</label>
+                        <div className="grid grid-cols-4 gap-3">
                             {["출근", "외근", "교육", "휴가"].map((status) => (
                                 <button
                                     key={status}
                                     type="button"
                                     onClick={() => setFormData({ ...formData, work_status: status })}
-                                    className={`py-2.5 rounded-xl text-sm font-bold transition-all ${formData.work_status === status
-                                            ? "bg-blue-600 text-white shadow-lg shadow-blue-500/20"
-                                            : "bg-slate-900/60 text-slate-500 hover:text-slate-300 border border-slate-800"
+                                    className={`py-3 rounded-[8px] text-sm font-bold transition-all border ${formData.work_status === status
+                                        ? "bg-[var(--off-black)] text-white border-[var(--off-black)] shadow-lg shadow-black/10 scale-[1.05]"
+                                        : "bg-white text-[var(--muted-sand)] hover:bg-[var(--canvas)] hover:text-[var(--off-black)] border-[var(--oat-border)]"
                                         }`}
                                 >
                                     {status}
@@ -75,47 +78,47 @@ export function DailyLogForm({ onClose }: { onClose: () => void }) {
                     </div>
 
                     {/* Stats Grid */}
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-2 gap-6">
                         <div className="space-y-2">
-                            <label className="text-xs font-bold text-slate-400 uppercase tracking-widest px-1 flex items-center gap-2">
-                                <Target className="w-3 h-3" /> 오늘 콜 목표
+                            <label className="text-xs font-bold text-[var(--muted-sand)] uppercase tracking-wider px-1 flex items-center gap-2">
+                                <Target className="w-3.5 h-3.5" /> 오늘 콜 목표
                             </label>
                             <input
                                 type="number"
-                                className="glass-input w-full h-12 text-lg font-bold font-outfit"
+                                className="premium-input w-full h-14 text-xl font-bold font-outfit"
                                 value={formData.call_target}
                                 onChange={(e) => setFormData({ ...formData, call_target: parseInt(e.target.value) || 0 })}
                             />
                         </div>
                         <div className="space-y-2">
-                            <label className="text-xs font-bold text-purple-400 uppercase tracking-widest px-1 flex items-center gap-2">
-                                <PhoneCall className="w-3 h-3" /> 시도 콜 수
+                            <label className="text-xs font-bold text-indigo-500 uppercase tracking-wider px-1 flex items-center gap-2">
+                                <PhoneCall className="w-3.5 h-3.5" /> 시도 콜 수
                             </label>
                             <input
                                 type="number"
-                                className="glass-input w-full h-12 text-lg font-bold font-outfit text-purple-400"
+                                className="premium-input w-full h-14 text-xl font-bold font-outfit border-indigo-100 focus:border-indigo-500"
                                 value={formData.call_attempts}
                                 onChange={(e) => setFormData({ ...formData, call_attempts: parseInt(e.target.value) || 0 })}
                             />
                         </div>
                         <div className="space-y-2">
-                            <label className="text-xs font-bold text-green-400 uppercase tracking-widest px-1 flex items-center gap-2">
-                                <PhoneForwarded className="w-3 h-3" /> 연결 콜 수
+                            <label className="text-xs font-bold text-green-500 uppercase tracking-wider px-1 flex items-center gap-2">
+                                <PhoneForwarded className="w-3.5 h-3.5" /> 연결 콜 수
                             </label>
                             <input
                                 type="number"
-                                className="glass-input w-full h-12 text-lg font-bold font-outfit text-green-400"
+                                className="premium-input w-full h-14 text-xl font-bold font-outfit border-green-100 focus:border-green-500 text-green-600"
                                 value={formData.call_actual}
                                 onChange={(e) => setFormData({ ...formData, call_actual: parseInt(e.target.value) || 0 })}
                             />
                         </div>
                         <div className="space-y-2">
-                            <label className="text-xs font-bold text-orange-400 uppercase tracking-widest px-1 flex items-center gap-2">
-                                <PhoneOff className="w-3 h-3" /> 부재 콜 수
+                            <label className="text-xs font-bold text-orange-500 uppercase tracking-wider px-1 flex items-center gap-2">
+                                <PhoneOff className="w-3.5 h-3.5" /> 부재 콜 수
                             </label>
                             <input
                                 type="number"
-                                className="glass-input w-full h-12 text-lg font-bold font-outfit text-orange-400"
+                                className="premium-input w-full h-14 text-xl font-bold font-outfit border-orange-100 focus:border-orange-500 text-orange-600"
                                 value={formData.missed_calls}
                                 onChange={(e) => setFormData({ ...formData, missed_calls: parseInt(e.target.value) || 0 })}
                             />
@@ -124,43 +127,43 @@ export function DailyLogForm({ onClose }: { onClose: () => void }) {
 
                     {/* Memo */}
                     <div className="space-y-2">
-                        <label className="text-xs font-bold text-slate-400 uppercase tracking-widest px-1 flex items-center gap-2">
-                            <MessageSquare className="w-3 h-3" /> 메모 (팀장 요청사항 포함)
+                        <label className="text-xs font-bold text-[var(--muted-sand)] uppercase tracking-wider px-1 flex items-center gap-2">
+                            <MessageSquare className="w-3.5 h-3.5" /> 메모 (팀장 요청사항 포함)
                         </label>
                         <textarea
-                            className="glass-input w-full h-32 p-4 text-sm font-medium resize-none leading-relaxed"
-                            placeholder="오늘의 특이사항이나 팀장님께 요청할 내용을 적어주세요."
+                            className="premium-input w-full h-36 p-5 text-base font-medium resize-none leading-relaxed"
+                            placeholder="오늘의 특이사항이나 팀장님께 요청할 내용을 정중히 적어주세요."
                             value={formData.memo}
                             onChange={(e) => setFormData({ ...formData, memo: e.target.value })}
                         />
                     </div>
 
                     {/* Actions */}
-                    <div className="pt-4 flex gap-4">
+                    <div className="pt-6 flex gap-4">
                         <button
                             type="button"
                             onClick={onClose}
-                            className="flex-1 py-4 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-2xl transition-all"
+                            className="btn-gentle flex-1 py-4 text-sm font-bold active:scale-95"
                         >
-                            취소
+                            창 닫기
                         </button>
                         <button
                             type="submit"
                             disabled={loading}
-                            className={`flex-[2] py-4 rounded-2xl flex items-center justify-center gap-2 font-bold transition-all shadow-lg ${isSaved
-                                    ? "bg-green-600 text-white shadow-green-500/20"
-                                    : "bg-blue-600 hover:bg-blue-500 text-white shadow-blue-500/20"
+                            className={`flex-[2] py-4 rounded-[4px] flex items-center justify-center gap-2 font-outfit font-bold transition-all shadow-xl active:scale-95 ${isSaved
+                                ? "bg-green-600 text-white shadow-green-500/20"
+                                : "bg-[var(--off-black)] hover:bg-[#313130] text-white shadow-black/10"
                                 }`}
                         >
                             {isSaved ? (
                                 <>
                                     <CheckCircle2 className="w-5 h-5" />
-                                    <span>저장 완료</span>
+                                    <span>성공적으로 저장되었습니다</span>
                                 </>
                             ) : (
                                 <>
                                     <Save className="w-5 h-5" />
-                                    <span>{loading ? "저장 중..." : "기록 저장하기"}</span>
+                                    <span>{loading ? "기록을 저장하는 중..." : "오늘의 기록 저장하기"}</span>
                                 </>
                             )}
                         </button>
