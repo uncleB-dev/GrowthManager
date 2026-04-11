@@ -71,7 +71,7 @@ export function useTeam() {
         });
     };
 
-    const fetchMyConnections = (callback: (conns: Connection[]) => void) => {
+    const fetchMyConnections = useCallback((callback: (conns: Connection[]) => void) => {
         if (!user) return () => { };
 
         const q = query(
@@ -84,7 +84,7 @@ export function useTeam() {
             const list = snapshot.docs.map(d => ({ id: d.id, ...d.data() } as Connection));
             callback(list);
         });
-    };
+    }, [user]);
 
     return { requestLeader, removeLeader, fetchMyConnections, loading };
 }

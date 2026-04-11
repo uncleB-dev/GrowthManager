@@ -5,16 +5,18 @@ import { X, Search, Trash2, Clock, CheckCircle2 } from "lucide-react";
 import { Connection } from "@/lib/types";
 
 export function LeaderSettings({ onClose }: { onClose: () => void }) {
+    const { user } = useAuth();
     const { requestLeader, removeLeader, fetchMyConnections, loading } = useTeam();
     const [email, setEmail] = useState("");
     const [myConnections, setMyConnections] = useState<Connection[]>([]);
 
     useEffect(() => {
+        if (!user) return;
         const unsubscribe = fetchMyConnections((list) => {
             setMyConnections(list);
         });
         return () => unsubscribe();
-    }, [fetchMyConnections]);
+    }, [user, fetchMyConnections]);
 
     const handleAdd = async (e: React.FormEvent) => {
         e.preventDefault();
