@@ -16,7 +16,7 @@ export function MonthlyGoalSettings({ onClose }: { onClose: () => void }) {
         e.preventDefault();
         if (!user) return;
         setLoading(true);
-        await updateDoc(doc(db, "members", user.id), {
+        await updateDoc(doc(db, "members", user.uid), {
             monthly_goal_amount: goalAmount,
             monthly_goal_cases: goalCases,
         });

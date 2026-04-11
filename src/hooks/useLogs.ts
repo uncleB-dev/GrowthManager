@@ -22,11 +22,11 @@ export function useLogs() {
         if (!user) return;
         setLoading(true);
         const today = new Date().toISOString().split('T')[0];
-        const logId = `${user.id}_${today}`;
+        const logId = `${user.uid}_${today}`;
 
         const logData = {
             ...data,
-            uid: user.id,
+            uid: user.uid,
             date: today,
             updatedAt: new Date().toISOString(),
         };
@@ -39,7 +39,7 @@ export function useLogs() {
         if (!user) return [];
         const q = query(
             collection(db, "daily_logs"),
-            where("uid", "==", user.id),
+            where("uid", "==", user.uid),
             orderBy("date", "desc"),
             limit(days)
         );

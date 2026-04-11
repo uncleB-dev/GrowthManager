@@ -37,7 +37,7 @@ export function useTeam() {
         // 2. Create a connection request
         await addDoc(collection(db, "connections"), {
             leaderEmail,
-            memberUid: user.id,
+            memberUid: user.uid,
             memberEmail: profile.email,
             memberName: profile.email?.split('@')[0], // Simplified name
             status: 'pending',
@@ -45,7 +45,7 @@ export function useTeam() {
         });
 
         // 3. Add to local leaders list (for UI showing 'pending')
-        await updateDoc(doc(db, "members", user.id), {
+        await updateDoc(doc(db, "members", user.uid), {
             leaders: arrayUnion(leaderEmail)
         });
 
@@ -54,13 +54,13 @@ export function useTeam() {
 
     const removeLeader = async (leaderEmail: string) => {
         if (!user) return;
-        await updateDoc(doc(db, "members", user.id), {
+        await updateDoc(doc(db, "members", user.uid), {
             leaders: arrayRemove(leaderEmail)
         });
         // Also remove from connections
         const q = query(
             collection(db, "connections"),
-            where("memberUid", "==", user.id),
+            where("memberUid", "==", user.uid),
             where("leaderEmail", "==", leaderEmail)
         );
         const snap = await getDocs(q);
