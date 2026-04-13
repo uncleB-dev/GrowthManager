@@ -221,52 +221,52 @@ export function LeaderDashboard() {
                             <div className="space-y-10">
                                 {/* Member Real-time Status & Goals Integration */}
                                 {selectedMember && teamProfiles[selectedMember.uid] && (
-                                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 animate-in fade-in slide-in-from-top-4 duration-500">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 animate-in fade-in slide-in-from-top-4 duration-500">
                                         {/* Monthly Goal Card */}
-                                        <div className="premium-card p-8 space-y-6 bg-blue-50/10 border-blue-100">
-                                            <h3 className="text-[var(--off-black)] text-xl font-bold flex items-center gap-3">
-                                                <div className="p-2.5 bg-blue-50 rounded-xl shadow-sm">
-                                                    <BarChart3 className="w-6 h-6 text-blue-500" />
+                                        <div className="premium-card p-5 space-y-4 bg-blue-50/10 border-blue-100">
+                                            <h3 className="text-sm font-bold flex items-center gap-2 text-[var(--off-black)]">
+                                                <div className="p-1.5 bg-blue-50 rounded-lg">
+                                                    <BarChart3 className="w-4 h-4 text-blue-500" />
                                                 </div>
                                                 이번 달 목표 성과
                                             </h3>
-                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                                <div className="p-5 bg-white rounded-2xl border border-blue-100 flex flex-col justify-center">
-                                                    <p className="text-[10px] text-[var(--muted-sand)] uppercase font-bold tracking-[0.2em] mb-2">목표 실적</p>
-                                                    <p className="text-xl font-bold text-[var(--off-black)] font-outfit truncate">
+                                            <div className="grid grid-cols-2 gap-3">
+                                                <div className="p-3 bg-white rounded-xl border border-blue-100">
+                                                    <p className="text-[9px] text-[var(--muted-sand)] font-bold mb-1 opacity-70">목표 실적</p>
+                                                    <p className="text-sm font-bold text-[var(--off-black)] font-outfit truncate">
                                                         {formatCurrency(teamProfiles[selectedMember.uid].monthly_goal_amount || 0)}
                                                     </p>
                                                 </div>
-                                                <div className="p-5 bg-[var(--off-black)] rounded-2xl text-white shadow-xl shadow-black/5 flex flex-col justify-center">
-                                                    <p className="text-[10px] text-white/50 uppercase font-bold tracking-[0.2em] mb-2">목표 건수 / 실제 달성</p>
-                                                    <p className="text-xl font-bold font-outfit tracking-tight">
-                                                        {teamProfiles[selectedMember.uid].monthly_goal_cases || 0}건 <span className="text-white/30 font-light mx-1">/</span> {memberHistory.reduce((sum, log) => sum + (log.call_actual || 0), 0)}건
+                                                <div className="p-3 bg-[var(--off-black)] rounded-xl text-white shadow-md">
+                                                    <p className="text-[9px] text-white/50 font-bold mb-1">목표 / 실달성</p>
+                                                    <p className="text-sm font-bold font-outfit">
+                                                        {teamProfiles[selectedMember.uid].monthly_goal_cases || 0}건 <span className="opacity-30">/</span> {memberHistory.reduce((sum, log) => sum + (log.call_actual || 0), 0)}건
                                                     </p>
                                                 </div>
                                             </div>
                                         </div>
 
                                         {/* Today's Status Card */}
-                                        <div className="premium-card p-8 space-y-6 bg-green-50/10 border-green-100">
-                                            <h3 className="text-[var(--off-black)] text-xl font-bold flex items-center gap-3">
-                                                <div className="p-2.5 bg-green-50 rounded-xl shadow-sm">
-                                                    <Clock className="w-6 h-6 text-green-500" />
+                                        <div className="premium-card p-5 space-y-4 bg-green-50/10 border-green-100">
+                                            <h3 className="text-sm font-bold flex items-center gap-2 text-[var(--off-black)]">
+                                                <div className="p-1.5 bg-green-50 rounded-lg">
+                                                    <Clock className="w-4 h-4 text-green-500" />
                                                 </div>
                                                 현재 활동 상태
                                             </h3>
-                                            <div className="grid grid-cols-2 gap-4">
-                                                <div className="p-5 bg-white rounded-2xl border border-green-100 flex flex-col justify-center">
-                                                    <p className="text-[10px] text-[var(--muted-sand)] uppercase font-bold tracking-[0.2em] mb-2">근무 상태</p>
-                                                    <div className="flex items-center gap-2">
-                                                        <span className={`w-2 h-2 rounded-full ${teamProfiles[selectedMember.uid].current_status === '출근' ? 'bg-green-500 animate-pulse' : 'bg-gray-300'}`} />
-                                                        <p className="text-xl font-bold text-[var(--off-black)]">
+                                            <div className="grid grid-cols-2 gap-3">
+                                                <div className="p-3 bg-white rounded-xl border border-green-100">
+                                                    <p className="text-[9px] text-[var(--muted-sand)] font-bold mb-1 opacity-70">근무 상태</p>
+                                                    <div className="flex items-center gap-1.5">
+                                                        <span className={`w-1.5 h-1.5 rounded-full ${teamProfiles[selectedMember.uid].current_status === '출근' ? 'bg-green-500 animate-pulse' : 'bg-gray-300'}`} />
+                                                        <p className="text-sm font-bold text-[var(--off-black)]">
                                                             {teamProfiles[selectedMember.uid].current_status || "퇴근"}
                                                         </p>
                                                     </div>
                                                 </div>
-                                                <div className="p-5 bg-white rounded-2xl border border-green-100 flex flex-col justify-center">
-                                                    <p className="text-[10px] text-[var(--muted-sand)] uppercase font-bold tracking-[0.2em] mb-2">오늘 콜 목표</p>
-                                                    <p className="text-xl font-bold text-[var(--off-black)] font-outfit">
+                                                <div className="p-3 bg-white rounded-xl border border-green-100">
+                                                    <p className="text-[9px] text-[var(--muted-sand)] font-bold mb-1 opacity-70">오늘 콜 목표</p>
+                                                    <p className="text-sm font-bold text-[var(--off-black)] font-outfit">
                                                         {teamProfiles[selectedMember.uid].current_call_target || 0}건
                                                     </p>
                                                 </div>
