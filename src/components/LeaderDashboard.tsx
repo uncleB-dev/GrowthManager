@@ -7,6 +7,7 @@ import { useAuth } from "@/context/AuthContext";
 import { Check, X, User, ArrowRight, BarChart3, Phone, MessageSquare, Calendar, Edit2, Clock } from "lucide-react";
 import { Connection, DailyLog, UserProfile } from "@/lib/types";
 import { useLogs } from "@/hooks/useLogs";
+import { formatCurrency } from "@/lib/utils";
 
 export function LeaderDashboard() {
     const { user } = useAuth();
@@ -217,57 +218,115 @@ export function LeaderDashboard() {
                         {historyLoading ? (
                             <div className="p-32 text-center text-[var(--muted-sand)] font-medium">히스토리를 정밀하게 로드하는 중입니다...</div>
                         ) : (
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-4">
-                                {memberHistory.length > 0 ? memberHistory.map((log) => (
-                                    <div
-                                        key={log.date}
-                                        className="premium-card p-8 flex flex-col gap-6 border-l-[4px] border-l-indigo-100 hover:border-l-indigo-400 transition-all bg-canvas/30"
-                                    >
-                                        <div className="flex justify-between items-start">
-                                            <div className="space-y-1">
-                                                <div className="flex items-center gap-2">
-                                                    <Calendar className="w-3.5 h-3.5 text-indigo-500" />
-                                                    <p className="text-lg font-bold text-[var(--off-black)] font-outfit">{log.date}</p>
+                            <div className="space-y-10">
+                                {/* Member Real-time Status & Goals Integration */}
+                                {selectedMember && teamProfiles[selectedMember.uid] && (
+                                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 animate-in fade-in slide-in-from-top-4 duration-500">
+                                        {/* Monthly Goal Card */}
+                                        <div className="premium-card p-8 space-y-6 bg-blue-50/10 border-blue-100">
+                                            <h3 className="text-[var(--off-black)] text-xl font-bold flex items-center gap-3">
+                                                <div className="p-2.5 bg-blue-50 rounded-xl shadow-sm">
+                                                    <BarChart3 className="w-6 h-6 text-blue-500" />
                                                 </div>
-                                                <div className="flex gap-2 items-center">
-                                                    <span className={`px-2.5 py-0.5 text-[10px] font-bold rounded-full border uppercase tracking-widest ${log.work_status === '출근' ? 'bg-green-50 text-green-600 border-green-100' : 'bg-gray-50 text-gray-500 border-gray-100'
-                                                        }`}>
-                                                        {log.work_status || '미입력'}
-                                                    </span>
-                                                    <span className="text-[10px] text-[var(--muted-sand)] font-bold uppercase tracking-widest">
-                                                        목표 {log.call_target || 0}건
-                                                    </span>
+                                                이번 달 목표 성과
+                                            </h3>
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                                <div className="p-5 bg-white rounded-2xl border border-blue-100 flex flex-col justify-center">
+                                                    <p className="text-[10px] text-[var(--muted-sand)] uppercase font-bold tracking-[0.2em] mb-2">목표 실적</p>
+                                                    <p className="text-xl font-bold text-[var(--off-black)] font-outfit truncate">
+                                                        {formatCurrency(teamProfiles[selectedMember.uid].monthly_goal_amount || 0)}
+                                                    </p>
+                                                </div>
+                                                <div className="p-5 bg-[var(--off-black)] rounded-2xl text-white shadow-xl shadow-black/5 flex flex-col justify-center">
+                                                    <p className="text-[10px] text-white/50 uppercase font-bold tracking-[0.2em] mb-2">목표 건수 / 실제 달성</p>
+                                                    <p className="text-xl font-bold font-outfit tracking-tight">
+                                                        {teamProfiles[selectedMember.uid].monthly_goal_cases || 0}건 <span className="text-white/30 font-light mx-1">/</span> {memberHistory.reduce((sum, log) => sum + (log.call_actual || 0), 0)}건
+                                                    </p>
                                                 </div>
                                             </div>
                                         </div>
 
-                                        <div className="grid grid-cols-3 gap-4 border-y border-[var(--oat-border)]/30 py-5">
-                                            <div className="text-center">
-                                                <p className="text-[10px] text-[var(--muted-sand)] font-bold uppercase mb-1">시도</p>
-                                                <p className="text-base font-bold text-indigo-600 font-outfit">{log.call_attempts || 0}</p>
-                                            </div>
-                                            <div className="text-center border-x border-[var(--oat-border)]/30 px-4">
-                                                <p className="text-[10px] text-[var(--muted-sand)] font-bold uppercase mb-1">연결</p>
-                                                <p className="text-base font-bold text-green-600 font-outfit">{log.call_actual || 0}</p>
-                                            </div>
-                                            <div className="text-center">
-                                                <p className="text-[10px] text-[var(--muted-sand)] font-bold uppercase mb-1">부재</p>
-                                                <p className="text-base font-bold text-orange-600 font-outfit">{log.missed_calls || 0}</p>
+                                        {/* Today's Status Card */}
+                                        <div className="premium-card p-8 space-y-6 bg-green-50/10 border-green-100">
+                                            <h3 className="text-[var(--off-black)] text-xl font-bold flex items-center gap-3">
+                                                <div className="p-2.5 bg-green-50 rounded-xl shadow-sm">
+                                                    <Clock className="w-6 h-6 text-green-500" />
+                                                </div>
+                                                현재 활동 상태
+                                            </h3>
+                                            <div className="grid grid-cols-2 gap-4">
+                                                <div className="p-5 bg-white rounded-2xl border border-green-100 flex flex-col justify-center">
+                                                    <p className="text-[10px] text-[var(--muted-sand)] uppercase font-bold tracking-[0.2em] mb-2">근무 상태</p>
+                                                    <div className="flex items-center gap-2">
+                                                        <span className={`w-2 h-2 rounded-full ${teamProfiles[selectedMember.uid].current_status === '출근' ? 'bg-green-500 animate-pulse' : 'bg-gray-300'}`} />
+                                                        <p className="text-xl font-bold text-[var(--off-black)]">
+                                                            {teamProfiles[selectedMember.uid].current_status || "퇴근"}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div className="p-5 bg-white rounded-2xl border border-green-100 flex flex-col justify-center">
+                                                    <p className="text-[10px] text-[var(--muted-sand)] uppercase font-bold tracking-[0.2em] mb-2">오늘 콜 목표</p>
+                                                    <p className="text-xl font-bold text-[var(--off-black)] font-outfit">
+                                                        {teamProfiles[selectedMember.uid].current_call_target || 0}건
+                                                    </p>
+                                                </div>
                                             </div>
                                         </div>
-
-                                        {log.memo && (
-                                            <div className="bg-white p-4 rounded-[12px] border border-dashed border-[var(--oat-border)] shadow-sm">
-                                                <p className="text-xs text-[var(--off-black)] font-medium leading-relaxed italic">&ldquo;{log.memo}&rdquo;</p>
-                                            </div>
-                                        )}
-                                    </div>
-                                )) : (
-                                    <div className="md:col-span-2 p-24 border-2 border-dashed border-[var(--oat-border)] rounded-[20px] text-center space-y-4">
-                                        <Calendar className="w-12 h-12 text-[var(--oat-border)] mx-auto" />
-                                        <p className="text-[var(--muted-sand)] font-medium">이 팀원의 이번 달 기록이 아직 존재하지 않습니다.</p>
                                     </div>
                                 )}
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-4">
+                                    {memberHistory.length > 0 ? memberHistory.map((log) => (
+                                        <div
+                                            key={log.date}
+                                            className="premium-card p-8 flex flex-col gap-6 border-l-[4px] border-l-indigo-100 hover:border-l-indigo-400 transition-all bg-canvas/30"
+                                        >
+                                            <div className="flex justify-between items-start">
+                                                <div className="space-y-1">
+                                                    <div className="flex items-center gap-2">
+                                                        <Calendar className="w-3.5 h-3.5 text-indigo-500" />
+                                                        <p className="text-lg font-bold text-[var(--off-black)] font-outfit">{log.date}</p>
+                                                    </div>
+                                                    <div className="flex gap-2 items-center">
+                                                        <span className={`px-2.5 py-0.5 text-[10px] font-bold rounded-full border uppercase tracking-widest ${log.work_status === '출근' ? 'bg-green-50 text-green-600 border-green-100' : 'bg-gray-50 text-gray-500 border-gray-100'
+                                                            }`}>
+                                                            {log.work_status || '미입력'}
+                                                        </span>
+                                                        <span className="text-[10px] text-[var(--muted-sand)] font-bold uppercase tracking-widest">
+                                                            목표 {log.call_target || 0}건
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div className="grid grid-cols-3 gap-4 border-y border-[var(--oat-border)]/30 py-5">
+                                                <div className="text-center">
+                                                    <p className="text-[10px] text-[var(--muted-sand)] font-bold uppercase mb-1">시도</p>
+                                                    <p className="text-base font-bold text-indigo-600 font-outfit">{log.call_attempts || 0}</p>
+                                                </div>
+                                                <div className="text-center border-x border-[var(--oat-border)]/30 px-4">
+                                                    <p className="text-[10px] text-[var(--muted-sand)] font-bold uppercase mb-1">연결</p>
+                                                    <p className="text-base font-bold text-green-600 font-outfit">{log.call_actual || 0}</p>
+                                                </div>
+                                                <div className="text-center">
+                                                    <p className="text-[10px] text-[var(--muted-sand)] font-bold uppercase mb-1">부재</p>
+                                                    <p className="text-base font-bold text-orange-600 font-outfit">{log.missed_calls || 0}</p>
+                                                </div>
+                                            </div>
+
+                                            {log.memo && (
+                                                <div className="bg-white p-4 rounded-[12px] border border-dashed border-[var(--oat-border)] shadow-sm">
+                                                    <p className="text-xs text-[var(--off-black)] font-medium leading-relaxed italic">&ldquo;{log.memo}&rdquo;</p>
+                                                </div>
+                                            )}
+                                        </div>
+                                    )) : (
+                                        <div className="md:col-span-2 p-24 border-2 border-dashed border-[var(--oat-border)] rounded-[20px] text-center space-y-4">
+                                            <Calendar className="w-12 h-12 text-[var(--oat-border)] mx-auto" />
+                                            <p className="text-[var(--muted-sand)] font-medium">이 팀원의 이번 달 기록이 아직 존재하지 않습니다.</p>
+                                        </div>
+                                    )}
+                                </div>
                             </div>
                         )}
 
