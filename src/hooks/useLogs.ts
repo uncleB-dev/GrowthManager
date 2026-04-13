@@ -109,7 +109,7 @@ export function useLogs() {
         querySnapshot.forEach(doc => {
             const data = doc.data() as DailyLog;
             if (data.date >= firstDayOfMonth && data.date <= today) {
-                totalCalls += (data.call_actual || 0);
+                totalCalls += (data.call_attempts || 0);
             }
         });
 
