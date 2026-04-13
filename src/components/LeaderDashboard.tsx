@@ -229,7 +229,7 @@ export function LeaderDashboard() {
                                             </div>
                                             <div className="flex items-center gap-2">
                                                 <div className="w-1 h-1 bg-[var(--oat-border)] rounded-full hidden md:block" />
-                                                <span>월 목표/성과: <span className="text-[var(--off-black)] font-bold">{teamProfiles[selectedMember.uid].monthly_goal_cases || 0}건 / {memberHistory.reduce((sum, log) => sum + (log.call_actual || 0), 0)}건</span></span>
+                                                <span>월 목표/총시도: <span className="text-[var(--off-black)] font-bold">{teamProfiles[selectedMember.uid].monthly_goal_cases || 0}건 / {memberHistory.reduce((sum, log) => sum + (log.call_attempts || 0), 0)}건</span></span>
                                             </div>
                                             <div className="flex items-center gap-2">
                                                 <div className="w-1 h-1 bg-[var(--oat-border)] rounded-full hidden md:block" />
