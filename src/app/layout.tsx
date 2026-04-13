@@ -16,6 +16,9 @@ export const metadata: Metadata = {
     statusBarStyle: "default",
     title: "GrowthManager",
   },
+  icons: {
+    apple: "/apple-touch-icon.png",
+  },
   formatDetection: {
     telephone: false,
   },
